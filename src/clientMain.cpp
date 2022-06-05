@@ -1,11 +1,13 @@
 #include "./netlib/netlib.h"
 
-Ref<Socket> socket = CreateRef<Socket>("127.0.0.1", "8080");
+Socket sock = Socket("127.0.0.1", "8080");
 
 int main()
 {
+	std::cout << "Initializing CLIENT..." << std::endl;
+
 	// Connects to the server
-	socket->Connect();
+	sock.Connect();
 
 	CommandManager commandManager;
 	DefaultCmds::RegisterDefaults(&commandManager);

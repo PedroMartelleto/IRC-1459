@@ -1,5 +1,7 @@
 #include "socket.h"
 
+#define MAX_MSG_LEN 4096
+
 // Throws an error
 void error(const char *msg)
 {
@@ -20,39 +22,40 @@ Socket::Socket(const char *address, const char *service)
 
 	// Gets the address information using the hints
 	// The available addresses are stored in this->addr, which is a linked list
-	int s = getaddrinfo(address, service, &hints, &this->m_address);
+	int status = getaddrinfo(address, service, &hints, &m_address);
 
-	if (s != 0)
+	if (status != 0)
+	{
 		error("getaddrinfo");
+	}
 
 	// Creates the socket
-	this->m_socketFile = socket(this->m_address->ai_family, this->m_address->ai_socktype,
-								this->m_address->ai_protocol);
+	m_socketFile = socket(m_address->ai_family, m_address->ai_socktype, m_address->ai_protocol);
 }
 
 void Socket::Bind()
 {
 	// Sets the socket to reuse the address (to avoid "address already in use")
 	int yes = 1;
-	int s = setsockopt(this->m_socketFile, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+	int result = setsockopt(m_socketFile, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
-	if (s == -1)
+	if (result == -1)
 		error("setsockopt");
 
 	// Tries to bind to each address in the addr linked list until one succeeds
-	s = -1;
+	result = -1;
 
-	while (this->m_address != NULL)
+	while (m_address != NULL)
 	{
-		s = bind(this->m_socketFile, this->m_address->ai_addr, this->m_address->ai_addrlen);
+		result = bind(m_socketFile, m_address->ai_addr, m_address->ai_addrlen);
 
-		if (s == 0)
+		if (result == 0)
 			break;
 
-		this->m_address = this->m_address->ai_next;
+		m_address = m_address->ai_next;
 	}
 
-	if (s != 0)
+	if (result != 0)
 		error("bind");
 }
 
@@ -68,66 +71,139 @@ void Socket::Listen()
 
 Socket Socket::Accept()
 {
-	Socket new_conn = Socket();
+	Socket newConnection = Socket();
 
-	new_conn.m_socketFile = accept(this->m_socketFile, NULL, NULL);
+	newConnection.m_socketFile = accept(this->m_socketFile, NULL, NULL);
 
-	if (new_conn.m_socketFile == -1)
+	if (newConnection.m_socketFile == -1)
+	{
 		error("accept");
+	}
 
-	return new_conn;
+	std::cout << "Accepted connection from " << newConnection.m_address->ai_addr << std::endl;
+
+	return newConnection;
 }
 
 // Connects to the specified address
 void Socket::Connect()
 {
 	// Tries to connect to each address in the addr linked list until one succeeds
-	int s;
-	while (this->m_address != NULL)
+	int result;
+	while (m_address != NULL)
 	{
-		s = connect(m_socketFile, m_address->ai_addr, this->m_address->ai_addrlen);
+		result = connect(m_socketFile, m_address->ai_addr, this->m_address->ai_addrlen);
 
-		if (s == 0)
+		if (result == 0)
 		{
+			std::cout << "Connected to " << m_address->ai_addr << std::endl;
 			break;
 		}
 
 		m_address = m_address->ai_next;
 	}
 
-	if (s != 0)
-		error("connect");
-}
-
-// Sends a string
-void Socket::Send(std::string data)
-{
-	int bytes_sent = send(this->m_socketFile, data.c_str(), data.length() + 1, 0);
-
-	if (bytes_sent == -1)
-		error("send");
-
-	if (bytes_sent == 0)
-		throw ConnectionCloseException();
-}
-
-// Receives a string
-std::string Socket::Receive(int maxSize)
-{
-	char buffer[maxSize];
-	int bytesReceived = recv(this->m_socketFile, buffer, maxSize, 0);
-
-	if (bytesReceived == -1)
+	if (result != 0)
 	{
+		error("connect");
+	}
+}
+
+void Socket::SendFragment(const std::string& str)
+{
+	int bytesSent = send(m_socketFile, str.c_str(), str.length() + 1, 0);
+
+	if (bytesSent == -1)
+	{
+		error("send");
+	}
+
+	if (bytesSent == 0)
+	{
+		throw ConnectionClosedException();
+	}
+}
+
+char* Socket::ReceiveFragment()
+{
+	char* buffer = new char[MAX_MSG_LEN];
+
+	for (int i = 0; i < MAX_MSG_LEN; i++)
+	{
+		buffer[i] = '\0';
+	}
+
+	int bytesReceived = recv(m_socketFile, buffer, MAX_MSG_LEN, 0);
+
+	if (bytesReceived < 0)
+	{
+		delete[] buffer;
 		error("recv");
 	}
 
 	if (bytesReceived == 0)
 	{
-		throw ConnectionCloseException();
+		delete[] buffer;
+		throw ConnectionClosedException();
 	}
 
-	return std::string(buffer);
+	return buffer;
+}
+
+// Sends a string
+void Socket::Send(const std::string& data)
+{
+	if (data.length() == 0)
+	{
+		return;
+	}
+
+	std::vector<std::string> fragments;
+	int fragmentCount = data.length() / MAX_MSG_LEN;
+	int lastFragmentSize = data.length() % MAX_MSG_LEN;
+
+	if (lastFragmentSize > 0)
+	{
+		fragmentCount++;
+	}
+
+	for (int i = 0; i < fragmentCount; i++)
+	{
+		int fragmentSize = MAX_MSG_LEN;
+
+		if (i == fragmentCount - 1)
+		{
+			fragmentSize = lastFragmentSize;
+		}
+
+		std::string fragment = data.substr(i * MAX_MSG_LEN, fragmentSize);
+		fragments.push_back(fragment);
+	}
+
+	for (const auto& fragment : fragments)
+	{
+		SendFragment(fragment);
+	}
+}
+
+// Receives a string
+std::string Socket::Receive()
+{
+	std::stringstream stream;
+
+	char* msg = ReceiveFragment();
+
+	while (msg[MAX_MSG_LEN-1] != '\0')
+	{
+		stream << msg;
+		delete[] msg;
+		msg = ReceiveFragment();
+	}
+
+	stream << msg;
+	delete[] msg;
+
+	return stream.str();
 }
 
 // Closes the connection
@@ -141,19 +217,19 @@ void Socket::Close(bool stopSends, bool stopReceives)
 {
 	if (stopSends && stopReceives)
 	{
-		shutdown(this->m_socketFile, SHUT_RDWR);
+		shutdown(m_socketFile, SHUT_RDWR);
 		return;
 	}
 
 	if (stopSends)
 	{
-		shutdown(this->m_socketFile, SHUT_WR);
+		shutdown(m_socketFile, SHUT_WR);
 		return;
 	}
 
 	if (stopReceives)
 	{
-		shutdown(this->m_socketFile, SHUT_RD);
+		shutdown(m_socketFile, SHUT_RD);
 		return;
 	}
 }

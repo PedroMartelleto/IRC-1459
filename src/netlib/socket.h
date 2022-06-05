@@ -24,17 +24,29 @@ public:
 	void Connect(); // Connects to the specified address
 
 	// Functions used for sending and receiving data
-	void Send(std::string s);
-	std::string Receive(int max_size);
+	void Send(const std::string& s);
+	std::string Receive();
 
 	// Functions used for closing the connection
 	// Optionally stops only sending or receiving
 	void Close();
-	void Close(bool stop_sends, bool stop_receives);
+	void Close(bool stopSends, bool stopReceives);
 
 private:
 	// Private constructor used when manually creating a socket
 	Socket() {}
+
+	/**
+	 * @brief Internal use. Sends a string to the connected server.
+	 * 
+	 * @param str Maximum of 4096 bytes.
+	 */
+	void SendFragment(const std::string& str);
+
+	/**
+	 * @brief Internal use. Receives a string from the connected server.
+	 */
+	char* ReceiveFragment();
 
 	// Socket file descriptor
 	int m_socketFile;
@@ -44,8 +56,8 @@ private:
 };
 
 // Exception thrown when the connection is closed after calling Receive()
-class ConnectionCloseException : public std::exception
+class ConnectionClosedException : public std::exception
 {
 public:
-	ConnectionCloseException() : std::exception() {}
+	ConnectionClosedException() : std::exception() {}
 };

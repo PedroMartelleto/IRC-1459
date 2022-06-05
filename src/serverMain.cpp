@@ -1,29 +1,30 @@
 #include "./netlib/netlib.h"
 
+Socket sock = Socket(NULL, "8080");
+
 int main()
 {
-	// Creates a socket on localhost with port 8080
-	Socket socket = Socket(NULL, "8080");
+	std::cout << "Initializing SERVER..." << std::endl;
 
 	// Binds the socket to a port
-	socket.Bind();
+	sock.Bind();
 
 	// Listens for incoming connections
-	socket.Listen();
+	sock.Listen();
 
 	// Accepts an incoming connection
-	Socket connectedSocket = socket.Accept();
+	Socket connectedSocket = sock.Accept();
 
 	// Prints the lines received from the client
 	while (true)
 	{
 		try
 		{
-			std::string s = connectedSocket.Receive(1024);
+			std::string s = connectedSocket.Receive();
 			std::cout << s << std::endl;
 			connectedSocket.Send(s);
 		}
-		catch (const ConnectionCloseException& e)
+		catch (const ConnectionClosedException& e)
 		{
 			std::cout << "Connection closed" << std::endl;
 			break;
