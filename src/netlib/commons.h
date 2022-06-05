@@ -15,9 +15,12 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <functional>
+#include <cstring>
 
-#include "./replies.h"
-#include "./errors.h"
+#include "msg/replies.h"
+#include "msg/errors.h"
+#include "utils.h"
+#include "logger.h"
 
 template<typename T>
 using Ref = std::shared_ptr<T>;

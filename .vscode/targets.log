@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # There is NO WARRANTY, to the extent permitted by law.
  
 
-# Make data base, printed on Sun Jun  5 13:10:18 2022
+# Make data base, printed on Sun Jun  5 15:41:21 2022
 
 # Variables
 
@@ -50,7 +50,7 @@ VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupp
 # environment
 _ = /usr/share/code/code
 # makefile (from 'makefile', line 10)
-objects = src/netlib/*.cpp
+objects = src/netlib/**/*.cpp src/netlib/*.cpp
 # environment
 JOURNAL_STREAM = 9:38984
 # environment
@@ -164,12 +164,12 @@ SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
- 
 VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-171cfdf1-112b-4a48-8069-b7805edfe594.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
 USER = pedro
+ 
 # environment
 LC_MONETARY = pt_BR.UTF-8
 # makefile
@@ -260,10 +260,9 @@ VSCODE_PID = 6224
 rs:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
-	make all
+	g++ $(flags) $(objects) src/serverMain.cpp -o build/server.o
 	./build/server.o
 
 all: server client
@@ -277,6 +276,7 @@ all: server client
 
 FORCE:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -328,7 +328,6 @@ server:
 # automatic
 # * := 
 # automatic
- 
 # + := 
 # automatic
 # | := 
@@ -346,7 +345,7 @@ server:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-05 13:09:19.889664644
+#  Last modified 2022-06-05 15:40:59.456446009
 #  File has been updated.
 #  Successfully updated.
 
@@ -359,6 +358,7 @@ makefile:
 .cpp.o: .cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 30):
 	g++ $*.cpp -c $(flags)
@@ -383,10 +383,9 @@ clean:
 rc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 26):
-	make all
+	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
 	./build/client.o
 
 # files hash-table stats:
@@ -403,6 +402,6 @@ rc:
 # strcache performance: lookups = 44 / hit rate = 43%
 # hash-table stats:
 # Load=25/8192=0%, Rehash=0, Collisions=1/44=2%
-# Finished Make data base on Sun Jun  5 13:10:18 2022
+# Finished Make data base on Sun Jun  5 15:41:21 2022
 
  

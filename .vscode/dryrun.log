@@ -1,7 +1,6 @@
 make --dry-run --keep-going --print-directory
 make: Entering directory '/home/pedro/Desktop/Projects/IRC-1459'
-g++ -g -Wall -std=c++1z src/netlib/*.cpp src/serverMain.cpp -o build/server.o
- 
-g++ -g -Wall -std=c++1z src/netlib/*.cpp src/clientMain.cpp -o build/client.o
+g++ -g -Wall -std=c++1z src/netlib/**/*.cpp src/netlib/*.cpp src/serverMain.cpp -o build/server.o
+g++ -g -Wall -std=c++1z src/netlib/**/*.cpp src/netlib/*.cpp src/clientMain.cpp -o build/client.o
 make: Leaving directory '/home/pedro/Desktop/Projects/IRC-1459'
  

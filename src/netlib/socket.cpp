@@ -1,10 +1,5 @@
 #include "socket.h"
 
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <string>
-
 // Throws an error
 void error(const char *msg)
 {

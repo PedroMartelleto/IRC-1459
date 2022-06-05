@@ -1,7 +1,6 @@
 #pragma once
 
 #include "./commons.h"
-
 #include <string>
 
 // Wrapper for socket functions

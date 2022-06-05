@@ -5,5 +5,12 @@
 class CommandParser
 {
 public:
-    static Ref<CommandSpecs> Parse(const std::string& text);
+    /**
+     * @brief Parses a command from a string.
+     * 
+     * @param inputText 
+     * @param manager 
+     * @return Command 
+     */
+    static Command FromInputText(const std::string& inputText, const CommandManager& manager);
 };
