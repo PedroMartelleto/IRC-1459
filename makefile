@@ -18,6 +18,14 @@ server: $(objects) server.o
 client: $(objects) client.o
 	g++ $(flags) $(objects) client.o -o client
 
+rs: $(objects) server.o
+	make all
+	./server
+
+rc: $(objects) client.o
+	make all
+	./client
+
 .cpp.o: $*.cpp
 	g++ $*.cpp -c $(flags)
 
