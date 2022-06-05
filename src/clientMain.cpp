@@ -1,18 +1,16 @@
 #include "./netlib/netlib.h"
 
+Ref<Socket> socket = CreateRef<Socket>("127.0.0.1", "8080");
 
 int main()
 {
-	// Creates a socket on localhost with port 8080
-	//Socket socket = Socket("127.0.0.1", "8080");
-
 	// Connects to the server
-	//socket.Connect();
+	socket->Connect();
 
 	CommandManager commandManager;
 	DefaultCmds::RegisterDefaults(&commandManager);
 
-	commandManager.RegisterCommand("SEND", {"message"}, [](const CommandArgs& args) {
+	commandManager.RegisterCommand("SEND", {"message"}, 1, "Sends a message.", [](const CommandArgs& args) {
 		return CommandResult::SUCCESS;
 	});
 

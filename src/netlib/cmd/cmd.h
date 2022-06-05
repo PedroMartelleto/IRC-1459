@@ -5,8 +5,9 @@
 enum class CommandResult : int
 {
     SUCCESS = 0,
-    PRINT_HELP = 1,
-    TERMINATE = 2
+    ERR = 1,
+    ERR_PRINT_HELP = 2,
+    EXIT = 3
 };
 
 using CommandArgs = std::vector<std::string>;

@@ -2,11 +2,11 @@
 
 void DefaultCmds::RegisterDefaults(CommandManager* manager)
 {
-    manager->RegisterCommand("QUIT", {}, [](const CommandArgs& args) {
-        return CommandResult::TERMINATE;
+    manager->RegisterCommand("QUIT", {}, 0, "Exits the program.", [](const CommandArgs& args) {
+        return CommandResult::EXIT;
     });
 
-    manager->RegisterCommand("HELP", { "command" }, [manager](const CommandArgs& args)
+    manager->RegisterCommand("HELP", { "command" }, 0, "Prints a list of commands or the description of one command.", [manager](const CommandArgs& args)
     {
         if (args.size() == 0)
         {
@@ -30,12 +30,12 @@ void DefaultCmds::RegisterDefaults(CommandManager* manager)
             else
             {
                 std::cout << "Unknown command: " << args[0] << std::endl;
-                return CommandResult::PRINT_HELP;
+                return CommandResult::ERR_PRINT_HELP;
             }
         }
         else
         {
-            return CommandResult::PRINT_HELP;
+            return CommandResult::ERR_PRINT_HELP;
         }
-    }, 0);
+    });
 }

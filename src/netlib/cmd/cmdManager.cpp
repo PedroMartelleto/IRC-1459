@@ -11,17 +11,18 @@ Ref<CommandSpecs> CommandManager::GetCmdSpecsByName(const std::string& name) con
     return it->second;
 }
 
-void CommandManager::RegisterCommand(const std::string& name, const CommandArgs& args, const CommandCallback& callback, int minArgs)
+void CommandManager::RegisterCommand(const std::string& name, const CommandArgs& args, int minArgs, const std::string& description,  const CommandCallback& callback)
 {
     auto specs = CreateRef<CommandSpecs>();
     specs->name = name;
     specs->argNames = args;
     specs->callback = callback;
+    specs->description = description;
     specs->minArgs = minArgs >= 0 ? minArgs : args.size();
     m_commands[name] = specs;
 }
 
-void CommandManager::RunCommand(const std::string& name, const CommandArgs& args)
+void CommandManager::RunCommand(const std::string& name, const CommandArgs& args) const
 {
     Command{ GetCmdSpecsByName(name), args }.Run();
 }
@@ -33,7 +34,7 @@ void CommandManager::Poll()
         auto cmd = GetNextCommand();
         auto result = cmd.Run();
 
-        if (result == CommandResult::TERMINATE)
+        if (result == CommandResult::EXIT)
         {
             break;
         }
