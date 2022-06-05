@@ -5,10 +5,12 @@
 # make clean: remove todos os arquivos objeto do diretório atual
 # make rebuild: como make all, mas recompila todos os arquivos objeto no diretório
 # make zip: cria o arquivo zip para a submissão
+# make rc: compila e roda o cliente.
+# make rs: compila e roda o servidor.
 #=======================================================
 
 objects = src/netlib/**/*.cpp src/netlib/*.cpp
-flags = -g -Wall -std=c++1z
+flags = -g -Wall -std=c++2a
 
 all: server client
 
@@ -42,11 +44,10 @@ zip: FORCE
 	rm code.zip -f
 	mkdir zip -p
 	rm zip/* -f
-	cp *.cpp zip
-	cp *.h zip
+	cp src zip
 	cp makefile zip 
-	zip code.zip zip/* -j
-	
+	cp README.md zip
+	zip code.zip zip/* -j	
 
 rebuild:
 	make clean

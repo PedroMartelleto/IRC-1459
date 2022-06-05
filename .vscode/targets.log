@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # There is NO WARRANTY, to the extent permitted by law.
  
 
-# Make data base, printed on Sun Jun  5 15:41:21 2022
+# Make data base, printed on Sun Jun  5 20:47:40 2022
 
 # Variables
 
@@ -49,10 +49,10 @@ SHELL = /bin/sh
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
 # environment
 _ = /usr/share/code/code
-# makefile (from 'makefile', line 10)
+# makefile (from 'makefile', line 12)
 objects = src/netlib/**/*.cpp src/netlib/*.cpp
 # environment
-JOURNAL_STREAM = 9:38984
+JOURNAL_STREAM = 9:38985
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile (from 'makefile', line 1)
@@ -76,7 +76,7 @@ VSCODE_VERBOSE_LOGGING = true
 # environment
 LC_CTYPE = pt_BR.UTF-8
 # environment
-MANAGERPID = 1066
+MANAGERPID = 1075
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -87,37 +87,60 @@ VSCODE_CWD = /home/pedro
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
 PATH = /home/pedro/.local/bin:/home/pedro/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-# makefile (from 'makefile', line 11)
-flags = -g -Wall -std=c++1z
+# makefile (from 'makefile', line 13)
+flags = -g -Wall -std=c++2a
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-SESSION_MANAGER = local/pedro-SVF15213CBW:@/tmp/.ICE-unix/1326,unix/pedro-SVF15213CBW:/tmp/.ICE-unix/1326
+SESSION_MANAGER = local/pedro-SVF15213CBW:@/tmp/.ICE-unix/1366,unix/pedro-SVF15213CBW:/tmp/.ICE-unix/1366
 # environment
+ 
 XDG_RUNTIME_DIR = /run/user/1000
+ 
 # environment
+ 
 XDG_MENU_PREFIX = gnome-
+ 
 # environment
+ 
 VSCODE_LOG_STACK = false
+ 
 # environment
+ 
 ELECTRON_RUN_AS_NODE = 1
+ 
 # environment
-INVOCATION_ID = fbc2b76afd1747c9b7ab2985cea56139
+ 
+INVOCATION_ID = 345740aa88c34034b607d6ae9e7f6b00
+ 
 # default
+ 
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
+ 
 # environment
+ 
 LS_COLORS = 
+ 
 # environment
+ 
 XDG_SESSION_DESKTOP = ubuntu
+ 
 # environment
+ 
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
+ 
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 6224
+ 
+GIO_LAUNCHED_DESKTOP_FILE_PID = 1923
+ 
 # automatic
+ 
 %F = $(notdir $%)
+ 
 # environment
+ 
 DISPLAY = :0
 # environment
 VSCODE_PIPE_LOGGING = true
@@ -126,7 +149,7 @@ PWD = /home/pedro/Desktop/Projects/IRC-1459
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1266
+SSH_AGENT_PID = 1295
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -142,7 +165,7 @@ VSCODE_CODE_CACHE_PATH = /home/pedro/.config/Code/CachedData/da15b6fd3ef856477bf
 # environment
 LOGNAME = pedro
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 +F = $(notdir $+)
 # environment
@@ -164,12 +187,11 @@ SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-171cfdf1-112b-4a48-8069-b7805edfe594.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-07294977-ce9c-485e-8cb1-6793612a0f81.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
 USER = pedro
- 
 # environment
 LC_MONETARY = pt_BR.UTF-8
 # makefile
@@ -237,7 +259,7 @@ LC_ADDRESS = pt_BR.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 6224
+VSCODE_PID = 1923
 # variable set hash-table stats:
 # Load=113/1024=11%, Rehash=0, Collisions=20/144=14%
 
@@ -261,7 +283,7 @@ rs:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 22):
+#  recipe to execute (from 'makefile', line 24):
 	g++ $(flags) $(objects) src/serverMain.cpp -o build/server.o
 	./build/server.o
 
@@ -276,7 +298,6 @@ all: server client
 
 FORCE:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -284,22 +305,21 @@ client:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 19):
+#  recipe to execute (from 'makefile', line 21):
 	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
 
 zip: FORCE
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 42):
+#  recipe to execute (from 'makefile', line 44):
 	rm code.zip -f
 	mkdir zip -p
 	rm zip/* -f
-	cp *.cpp zip
-	cp *.h zip
+	cp src zip
 	cp makefile zip 
-	zip code.zip zip/* -j
-	
+	cp README.md zip
+	zip code.zip zip/* -j	
 
 # Not a target:
 .SUFFIXES:
@@ -311,7 +331,7 @@ rebuild:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 52):
+#  recipe to execute (from 'makefile', line 53):
 	make clean
 	make all
 
@@ -339,13 +359,13 @@ server:
 # ? := 
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=1/13=8%
-#  recipe to execute (from 'makefile', line 16):
+#  recipe to execute (from 'makefile', line 18):
 	g++ $(flags) $(objects) src/serverMain.cpp -o build/server.o
 
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-05 15:40:59.456446009
+#  Last modified 2022-06-05 20:42:26.349233334
 #  File has been updated.
 #  Successfully updated.
 
@@ -358,9 +378,8 @@ makefile:
 .cpp.o: .cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 30):
+#  recipe to execute (from 'makefile', line 32):
 	g++ $*.cpp -c $(flags)
 
 # Not a target:
@@ -373,7 +392,7 @@ clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 33):
+#  recipe to execute (from 'makefile', line 35):
 	rm *.o -f
 	rm zip -fr
 	rm *.zip -f
@@ -384,7 +403,7 @@ rc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 26):
+#  recipe to execute (from 'makefile', line 28):
 	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
 	./build/client.o
 
@@ -402,6 +421,7 @@ rc:
 # strcache performance: lookups = 44 / hit rate = 43%
 # hash-table stats:
 # Load=25/8192=0%, Rehash=0, Collisions=1/44=2%
-# Finished Make data base on Sun Jun  5 15:41:21 2022
+# Finished Make data base on Sun Jun  5 20:47:40 2022
+ 
 
  

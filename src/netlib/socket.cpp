@@ -80,7 +80,7 @@ Socket Socket::Accept()
 		error("accept");
 	}
 
-	std::cout << "Accepted connection from " << newConnection.m_address->ai_addr << std::endl;
+	Logger::Print("Accepted connection from %s.\n", newConnection.m_address->ai_addr);
 
 	return newConnection;
 }

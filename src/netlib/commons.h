@@ -20,7 +20,7 @@
 #include "msg/replies.h"
 #include "msg/errors.h"
 #include "utils.h"
-#include "logger.h"
+#include "threads/logger.h"
 
 template<typename T>
 using Ref = std::shared_ptr<T>;
