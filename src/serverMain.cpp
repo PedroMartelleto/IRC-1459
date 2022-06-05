@@ -1,6 +1,7 @@
 #include "./netlib/netlib.h"
 
 Socket sock = Socket(NULL, "8080");
+ThreadSafeQueue<std::string> queue;
 
 int main()
 {
@@ -14,6 +15,8 @@ int main()
 
 	// Accepts an incoming connection
 	Socket connectedSocket = sock.Accept();
+
+	auto listenerThread = std::thread();
 
 	// Prints the lines received from the client
 	while (true)
