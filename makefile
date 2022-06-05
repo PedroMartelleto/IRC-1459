@@ -7,24 +7,24 @@
 # make zip: cria o arquivo zip para a submissão
 #=======================================================
 
-objects = socket.o
-flags = -g
+objects = src/netlib/*.cpp
+flags = -g -Wall -std=c++1z
 
 all: server client
 
-server: $(objects) server.o
-	g++ $(flags) $(objects) server.o -o server
+server:
+	g++ $(flags) $(objects) src/serverMain.cpp -o build/server.o
 
-client: $(objects) client.o
-	g++ $(flags) $(objects) client.o -o client
+client:
+	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
 
-rs: $(objects) server.o
+rs:
 	make all
-	./server
+	./build/server.o
 
-rc: $(objects) client.o
+rc:
 	make all
-	./client
+	./build/client.o
 
 .cpp.o: $*.cpp
 	g++ $*.cpp -c $(flags)

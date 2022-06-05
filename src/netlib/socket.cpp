@@ -12,9 +12,6 @@ void error(const char *msg)
 	throw msg;
 }
 
-// Constructor of the class
-// address: URL or IP address of the server (must be NULL when hosting a
-// service) service: port number or name of the service (e.g. "8080" or "http")
 Socket::Socket(const char *address, const char *service)
 {
 	// Creates the structure for storing the address information
@@ -28,22 +25,21 @@ Socket::Socket(const char *address, const char *service)
 
 	// Gets the address information using the hints
 	// The available addresses are stored in this->addr, which is a linked list
-	int s = getaddrinfo(address, service, &hints, &this->addr);
+	int s = getaddrinfo(address, service, &hints, &this->m_address);
 
 	if (s != 0)
 		error("getaddrinfo");
 
 	// Creates the socket
-	this->sockfd = socket(this->addr->ai_family, this->addr->ai_socktype,
-						  this->addr->ai_protocol);
+	this->m_socketFile = socket(this->m_address->ai_family, this->m_address->ai_socktype,
+								this->m_address->ai_protocol);
 }
 
-// Binds the socket to a port
 void Socket::Bind()
 {
 	// Sets the socket to reuse the address (to avoid "address already in use")
 	int yes = 1;
-	int s = setsockopt(this->sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+	int s = setsockopt(this->m_socketFile, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
 	if (s == -1)
 		error("setsockopt");
@@ -51,37 +47,37 @@ void Socket::Bind()
 	// Tries to bind to each address in the addr linked list until one succeeds
 	s = -1;
 
-	while (this->addr != NULL)
+	while (this->m_address != NULL)
 	{
-		s = bind(this->sockfd, this->addr->ai_addr, this->addr->ai_addrlen);
+		s = bind(this->m_socketFile, this->m_address->ai_addr, this->m_address->ai_addrlen);
 
 		if (s == 0)
 			break;
 
-		this->addr = this->addr->ai_next;
+		this->m_address = this->m_address->ai_next;
 	}
 
 	if (s != 0)
 		error("bind");
 }
 
-// Listens for incoming connections
 void Socket::Listen()
 {
-	int s = listen(this->sockfd, 5);
+	int s = listen(this->m_socketFile, 5);
 
 	if (s == -1)
+	{
 		error("listen");
+	}
 }
 
-// Accepts an incoming connection
 Socket Socket::Accept()
 {
 	Socket new_conn = Socket();
 
-	new_conn.sockfd = accept(this->sockfd, NULL, NULL);
+	new_conn.m_socketFile = accept(this->m_socketFile, NULL, NULL);
 
-	if (new_conn.sockfd == -1)
+	if (new_conn.m_socketFile == -1)
 		error("accept");
 
 	return new_conn;
@@ -92,14 +88,16 @@ void Socket::Connect()
 {
 	// Tries to connect to each address in the addr linked list until one succeeds
 	int s;
-	while (this->addr != NULL)
+	while (this->m_address != NULL)
 	{
-		s = connect(this->sockfd, this->addr->ai_addr, this->addr->ai_addrlen);
+		s = connect(m_socketFile, m_address->ai_addr, this->m_address->ai_addrlen);
 
 		if (s == 0)
+		{
 			break;
+		}
 
-		this->addr = this->addr->ai_next;
+		m_address = m_address->ai_next;
 	}
 
 	if (s != 0)
@@ -109,7 +107,7 @@ void Socket::Connect()
 // Sends a string
 void Socket::Send(std::string data)
 {
-	int bytes_sent = send(this->sockfd, data.c_str(), data.length() + 1, 0);
+	int bytes_sent = send(this->m_socketFile, data.c_str(), data.length() + 1, 0);
 
 	if (bytes_sent == -1)
 		error("send");
@@ -119,32 +117,48 @@ void Socket::Send(std::string data)
 }
 
 // Receives a string
-std::string Socket::Receive(int max_size)
+std::string Socket::Receive(int maxSize)
 {
-	char buffer[max_size];
-	int bytes_received = recv(this->sockfd, buffer, max_size, 0);
+	char buffer[maxSize];
+	int bytesReceived = recv(this->m_socketFile, buffer, maxSize, 0);
 
-	if (bytes_received == -1)
+	if (bytesReceived == -1)
+	{
 		error("recv");
+	}
 
-	if (bytes_received == 0)
+	if (bytesReceived == 0)
+	{
 		throw ConnectionCloseException();
+	}
 
 	return std::string(buffer);
 }
 
 // Closes the connection
-void Socket::Close() { this->Close(true, true); }
+void Socket::Close()
+{
+	Close(true, true);
+}
 
 // Closes the connection, optionally stopping only sending or receiving
-void Socket::Close(bool stop_sends, bool stop_receives)
+void Socket::Close(bool stopSends, bool stopReceives)
 {
-	if (stop_sends && stop_receives)
-		shutdown(this->sockfd, SHUT_RDWR);
+	if (stopSends && stopReceives)
+	{
+		shutdown(this->m_socketFile, SHUT_RDWR);
+		return;
+	}
 
-	if (stop_sends)
-		shutdown(this->sockfd, SHUT_WR);
+	if (stopSends)
+	{
+		shutdown(this->m_socketFile, SHUT_WR);
+		return;
+	}
 
-	if (stop_receives)
-		shutdown(this->sockfd, SHUT_RD);
+	if (stopReceives)
+	{
+		shutdown(this->m_socketFile, SHUT_RD);
+		return;
+	}
 }

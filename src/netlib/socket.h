@@ -1,7 +1,6 @@
 #pragma once
 
-#include <netdb.h>
-#include <sys/socket.h>
+#include "./commons.h"
 
 #include <string>
 
@@ -9,10 +8,12 @@
 class Socket
 {
 public:
-	// Constructor of the class
-	// address: URL or IP address of the server
-	//         (must be NULL when hosting a service)
-	// service: port number or name of the service (e.g. "8080" or "http")
+	/**
+	 * @brief Construct a new Socket:: Socket object
+	 * 
+	 * @param address URL or IP address of the server (must be NULL when hosting a service).
+	 * @param service port number or name of the service (e.g. "8080" or "http").
+	 */
 	Socket(const char *address, const char *service);
 
 	// Functions used hosting a service on a port
@@ -37,10 +38,10 @@ private:
 	Socket() {}
 
 	// Socket file descriptor
-	int sockfd;
+	int m_socketFile;
 
 	// Address info for the socket
-	struct addrinfo *addr;
+	struct addrinfo *m_address;
 };
 
 // Exception thrown when the connection is closed after calling Receive()
