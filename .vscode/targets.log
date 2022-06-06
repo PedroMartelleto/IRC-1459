@@ -5,9 +5,8 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
- 
 
-# Make data base, printed on Sun Jun  5 20:47:40 2022
+# Make data base, printed on Sun Jun  5 22:59:58 2022
 
 # Variables
 
@@ -52,7 +51,7 @@ _ = /usr/share/code/code
 # makefile (from 'makefile', line 12)
 objects = src/netlib/**/*.cpp src/netlib/*.cpp
 # environment
-JOURNAL_STREAM = 9:38985
+JOURNAL_STREAM = 9:39056
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile (from 'makefile', line 1)
@@ -76,7 +75,7 @@ VSCODE_VERBOSE_LOGGING = true
 # environment
 LC_CTYPE = pt_BR.UTF-8
 # environment
-MANAGERPID = 1075
+MANAGERPID = 1108
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -88,59 +87,36 @@ MAKE_HOST := x86_64-pc-linux-gnu
 # environment
 PATH = /home/pedro/.local/bin:/home/pedro/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # makefile (from 'makefile', line 13)
-flags = -g -Wall -std=c++2a
+flags = -g -Wall -std=c++1z -pthread
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-SESSION_MANAGER = local/pedro-SVF15213CBW:@/tmp/.ICE-unix/1366,unix/pedro-SVF15213CBW:/tmp/.ICE-unix/1366
+SESSION_MANAGER = local/pedro-SVF15213CBW:@/tmp/.ICE-unix/1374,unix/pedro-SVF15213CBW:/tmp/.ICE-unix/1374
 # environment
- 
 XDG_RUNTIME_DIR = /run/user/1000
- 
 # environment
- 
 XDG_MENU_PREFIX = gnome-
- 
 # environment
- 
 VSCODE_LOG_STACK = false
- 
 # environment
- 
 ELECTRON_RUN_AS_NODE = 1
- 
 # environment
- 
-INVOCATION_ID = 345740aa88c34034b607d6ae9e7f6b00
- 
+INVOCATION_ID = 7148434c9bd840799c55e0dff910411f
 # default
- 
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
- 
 # environment
- 
 LS_COLORS = 
- 
 # environment
- 
 XDG_SESSION_DESKTOP = ubuntu
- 
 # environment
- 
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
- 
 # environment
- 
-GIO_LAUNCHED_DESKTOP_FILE_PID = 1923
- 
+GIO_LAUNCHED_DESKTOP_FILE_PID = 4652
 # automatic
- 
 %F = $(notdir $%)
- 
 # environment
- 
 DISPLAY = :0
 # environment
 VSCODE_PIPE_LOGGING = true
@@ -149,7 +125,7 @@ PWD = /home/pedro/Desktop/Projects/IRC-1459
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1295
+SSH_AGENT_PID = 1322
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -187,7 +163,7 @@ SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-07294977-ce9c-485e-8cb1-6793612a0f81.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-d7741539-9724-40e5-849d-3e6d26bbbec8.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
@@ -259,7 +235,7 @@ LC_ADDRESS = pt_BR.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 1923
+VSCODE_PID = 4652
 # variable set hash-table stats:
 # Load=113/1024=11%, Rehash=0, Collisions=20/144=14%
 
@@ -310,6 +286,7 @@ client:
 
 zip: FORCE
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 44):
@@ -365,7 +342,7 @@ server:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-05 20:42:26.349233334
+#  Last modified 2022-06-05 22:59:12.386317802
 #  File has been updated.
 #  Successfully updated.
 
@@ -421,7 +398,6 @@ rc:
 # strcache performance: lookups = 44 / hit rate = 43%
 # hash-table stats:
 # Load=25/8192=0%, Rehash=0, Collisions=1/44=2%
-# Finished Make data base on Sun Jun  5 20:47:40 2022
- 
+# Finished Make data base on Sun Jun  5 22:59:58 2022
 
  

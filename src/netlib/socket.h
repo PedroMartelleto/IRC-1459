@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./commons.h"
+#include "commons.h"
 #include <string>
 
 // Wrapper for socket functions
@@ -24,7 +24,7 @@ public:
 	void Connect(); // Connects to the specified address
 
 	// Functions used for sending and receiving data
-	void Send(const std::string& s);
+	void Send(const std::string& msg);
 	std::string Receive();
 
 	// Functions used for closing the connection
@@ -39,9 +39,10 @@ private:
 	/**
 	 * @brief Internal use. Sends a string to the connected server.
 	 * 
-	 * @param str Maximum of 4096 bytes.
+	 * @param fragment string to send.
+	 * @param length length of the string, maximum of 4096 bytes.
 	 */
-	void SendFragment(const std::string& str);
+	void SendFragment(const char* fragment, int fragmentSize);
 
 	/**
 	 * @brief Internal use. Receives a string from the connected server.

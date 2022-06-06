@@ -10,7 +10,7 @@
 #=======================================================
 
 objects = src/netlib/**/*.cpp src/netlib/*.cpp
-flags = -g -Wall -std=c++2a
+flags = -g -Wall -std=c++1z -pthread
 
 all: server client
 

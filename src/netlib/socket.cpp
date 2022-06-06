@@ -73,14 +73,14 @@ Socket Socket::Accept()
 {
 	Socket newConnection = Socket();
 
-	newConnection.m_socketFile = accept(this->m_socketFile, NULL, NULL);
+	newConnection.m_socketFile = accept(m_socketFile, NULL, NULL);
 
 	if (newConnection.m_socketFile == -1)
 	{
 		error("accept");
 	}
 
-	Logger::Print("Accepted connection from %s.\n", newConnection.m_address->ai_addr);
+	Logger::Print("Accepted new connection.\n");
 
 	return newConnection;
 }
@@ -109,9 +109,9 @@ void Socket::Connect()
 	}
 }
 
-void Socket::SendFragment(const std::string& str)
+void Socket::SendFragment(const char* fragment, int fragmentSize)
 {
-	int bytesSent = send(m_socketFile, str.c_str(), str.length() + 1, 0);
+	int bytesSent = send(m_socketFile, fragment, fragmentSize, 0);
 
 	if (bytesSent == -1)
 	{
@@ -126,9 +126,9 @@ void Socket::SendFragment(const std::string& str)
 
 char* Socket::ReceiveFragment()
 {
-	char* buffer = new char[MAX_MSG_LEN];
+	char* buffer = new char[MAX_MSG_LEN+1];
 
-	for (int i = 0; i < MAX_MSG_LEN; i++)
+	for (int i = 0; i < MAX_MSG_LEN+1; i++)
 	{
 		buffer[i] = '\0';
 	}
@@ -158,7 +158,7 @@ void Socket::Send(const std::string& data)
 		return;
 	}
 
-	std::vector<std::string> fragments;
+	std::vector<std::pair<char*, int>> fragments;
 	int fragmentCount = data.length() / MAX_MSG_LEN;
 	int lastFragmentSize = data.length() % MAX_MSG_LEN;
 
@@ -177,12 +177,19 @@ void Socket::Send(const std::string& data)
 		}
 
 		std::string fragment = data.substr(i * MAX_MSG_LEN, fragmentSize);
-		fragments.push_back(fragment);
+		char* fragmentStr = new char[fragment.length() + 1];
+		strcpy(fragmentStr, fragment.c_str());
+		fragments.push_back({
+			fragmentStr, fragment.length()
+		});
 	}
 
-	for (const auto& fragment : fragments)
+	for (int i = 0; i < fragments.size(); ++i)
 	{
-		SendFragment(fragment);
+		char* text = fragments[i].first;
+		int textSize = fragments[i].second;
+		SendFragment(text, textSize + (i == fragments.size() - 1 ? 1 : 0));
+		delete[] text;
 	}
 }
 

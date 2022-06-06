@@ -1,11 +1,13 @@
 #include "./netlib/netlib.h"
 #include <sstream>
+#include <thread>
 
 Socket sock = Socket(NULL, "8080");
 
 int main()
 {
-	std::cout << "Initializing SERVER..." << std::endl;
+	Logger::Print("Initializing server...\n");
+	Logger::Print("Waiting for client...\n");
 
 	auto commandManager = CommandManager();
 	DefaultCmds::RegisterDefaults(&commandManager);
@@ -19,8 +21,10 @@ int main()
 	// Accepts an incoming connection
 	Socket connectedSocket = sock.Accept();
 
+	Logger::Print("Type HELP for a list of commands.\n");
+
 	// Listener thread that waits for messages being received.
-	auto listener = std::thread([connectedSocket]()
+	auto listener = std::thread([&connectedSocket]()
 	{
 		// Prints the lines received from the client
 		while (true)
@@ -28,8 +32,7 @@ int main()
 			try
 			{
 				std::string msg = connectedSocket.Receive();
-				Logger::Print(":client %s\n", msg);
-				connectedSocket.Send(msg);
+				Logger::Print(":client %s\n", msg.c_str());
 			}
 			catch (const ConnectionClosedException& e)
 			{
@@ -40,10 +43,10 @@ int main()
 	});
 
 	// In the main thread, we wait for SEND commands.
-	commandManager.RegisterCommand("SEND", {"message"}, 1, "Sends a message.", [connectedSocket](const CommandArgs& args) {
+	commandManager.RegisterCommand("SEND", {"message"}, 1, "Sends a message.", [&connectedSocket](const CommandArgs& args) {
 		std::stringstream message;
 		message << args[0];
-		for (int i = 1; i < args.size(); ++i) {
+		for (int i = 1; i < (int)args.size(); ++i) {
 			message << " " << args[i];
 		}
 		connectedSocket.Send(message.str());
