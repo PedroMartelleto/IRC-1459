@@ -15,18 +15,22 @@ flags = -g -Wall -std=c++1z -pthread
 all: server client
 
 server:
+	mkdir build -p
 	g++ $(flags) $(objects) src/serverMain.cpp -o build/server.o
 
 client:
+	mkdir build -p
 	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
 
 rs:
 	stty -icanon
+	mkdir build -p
 	g++ $(flags) $(objects) src/serverMain.cpp -o build/server.o
 	./build/server.o
 
 rc:
 	stty -icanon
+	mkdir build -p
 	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
 	./build/client.o
 
@@ -44,10 +48,11 @@ zip: FORCE
 	rm code.zip -f
 	mkdir zip -p
 	rm zip/* -f
-	cp src zip
+	cp -r src zip
 	cp makefile zip 
 	cp README.md zip
-	zip code.zip zip/* -j	
+	cd zip; zip -r code.zip *
+	mv zip/code.zip .
 
 rebuild:
 	make clean

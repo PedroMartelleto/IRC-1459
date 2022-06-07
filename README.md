@@ -8,7 +8,7 @@ To build, run:
 
 > make all
 
-The client and server binaries will be create on the build folder.
+The client and server binaries will be created on the build folder.
 
 To start the server, run:
 
