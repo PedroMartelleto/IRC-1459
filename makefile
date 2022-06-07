@@ -21,10 +21,12 @@ client:
 	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
 
 rs:
+	stty -icanon
 	g++ $(flags) $(objects) src/serverMain.cpp -o build/server.o
 	./build/server.o
 
 rc:
+	stty -icanon
 	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
 	./build/client.o
 
@@ -32,11 +34,9 @@ rc:
 	g++ $*.cpp -c $(flags)
 
 clean:
-	rm *.o -f
+	rm ./build/*.o -f
 	rm zip -fr
 	rm *.zip -f
-	rm client
-	rm server
 
 FORCE:
 

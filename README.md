@@ -10,11 +10,13 @@ To build, run:
 
 The client and server binaries will be create on the build folder.
 
-To run:
+To start the server, run:
 
-> cd build
-> ./client.o
-> ./server.o
+> make rs
+
+To start the client, run this after the server has already started:
+
+> make rc
 
 ## Commands
 

@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <functional>
 #include <cstring>
+#include <memory>
 
 #include "msg/replies.h"
 #include "msg/errors.h"

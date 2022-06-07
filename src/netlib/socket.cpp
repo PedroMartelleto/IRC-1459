@@ -184,7 +184,7 @@ void Socket::Send(const std::string& data)
 		});
 	}
 
-	for (int i = 0; i < fragments.size(); ++i)
+	for (unsigned int i = 0; i < fragments.size(); ++i)
 	{
 		char* text = fragments[i].first;
 		int textSize = fragments[i].second;
