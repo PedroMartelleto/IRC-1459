@@ -2,6 +2,11 @@
 
 Client-server chat based on the IRC-1459 specification.
 
+## Group
+ - Antônio Rodrigues Rigolino (11795791)
+ - João Marcos Cardoso da Silva (11795314)
+ - Pedro Martelleto Bressane Rezende (11795641)
+ 
 ## Building
 
 To build, run:
