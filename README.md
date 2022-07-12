@@ -1,6 +1,6 @@
 # IRC-1459
 
-Client-server chat based on the IRC-1459 specification.
+Client-server chat based on the RFC 1459 specification.
 
 ## Group
  - Antônio Rodrigues Rigolino (11795791)
