@@ -1,6 +1,6 @@
 # IRC-1459
 
-Client-server chat based on the IRC-1459 specification.
+Implementation of the Internet Relay Chat Protocol from the RFC 1459 specification.
 
 ## Group
 
