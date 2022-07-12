@@ -11,5 +11,5 @@
    host, and the server to which the client is connected.
  */
 class Client {
-
+private:
 };

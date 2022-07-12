@@ -11,6 +11,10 @@ Ref<CommandSpecs> CommandManager::GetCmdSpecsByName(const std::string& name) con
     return it->second;
 }
 
+void CommandManager::RegisterDefaultCommand(const CommandCallback& callback) {
+    *m_defaultCommand = callback;
+}
+
 void CommandManager::RegisterCommand(const std::string& name, const CommandArgs& args, int minArgs, const std::string& description,  const CommandCallback& callback)
 {
     auto specs = CreateRef<CommandSpecs>();
@@ -31,26 +35,32 @@ void CommandManager::Poll()
 {
     while (true)
     {
-        auto cmd = GetNextCommand();
-        auto result = cmd.Run();
+        std::string line;
+        std::getline(std::cin, line);
 
-        if (result == CommandResult::EXIT)
+        if (line[0] == '/') {
+            auto cmd = GetNextCommand(line);
+            auto result = cmd.Run();
+
+            if (result == CommandResult::EXIT)
+            {
+                break;
+            }
+        }
+        else if (m_defaultCommand != nullptr)
         {
-            break;
+            (*m_defaultCommand)({ line });
         }
     }
 }
 
-Command CommandManager::GetNextCommand()
+Command CommandManager::GetNextCommand(const std::string& line)
 {
-    std::string line;
-    std::getline(std::cin, line);
-    
     auto parsedCommand = CommandParser::FromInputText(line, *this);
 
     if (parsedCommand.specs == Command::Invalid.specs)
     {
-        return GetNextCommand();
+        return GetNextCommand(line);
     }
     else
     {

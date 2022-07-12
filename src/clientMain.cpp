@@ -21,7 +21,7 @@ int main()
 			try
 			{
 				std::string msg = sock.Receive();
-				Logger::Print(":server %s\n", msg.c_str());
+				Logger::Print("%s\n", msg.c_str());
 			}
 			catch (const ConnectionClosedException& e)
 			{
@@ -32,7 +32,7 @@ int main()
 	});
 
 	// In the main thread, we wait for SEND commands.
-	commandManager.RegisterCommand("SEND", {"message"}, 1, "Sends a message.", [&sock](const CommandArgs& args) {
+	commandManager.RegisterDefaultCommand([&sock](const CommandArgs& args) {
 		std::stringstream message;
 		message << args[0];
 		for (int i = 1; i < (int)args.size(); ++i) {

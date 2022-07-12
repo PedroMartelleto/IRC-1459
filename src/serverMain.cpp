@@ -21,7 +21,7 @@ int main()
 	// Accepts an incoming connection
 	Socket connectedSocket = sock.Accept();
 
-	Logger::Print("Type HELP for a list of commands.\n");
+	Logger::Print("Type /help for a list of commands.\n");
 
 	// Listener thread that waits for messages being received.
 	auto listener = std::thread([&connectedSocket]()
@@ -41,15 +41,11 @@ int main()
 			}
 		}
 	});
-
-	// In the main thread, we wait for SEND commands.
-	commandManager.RegisterCommand("SEND", {"message"}, 1, "Sends a message.", [&connectedSocket](const CommandArgs& args) {
-		std::stringstream message;
-		message << args[0];
-		for (int i = 1; i < (int)args.size(); ++i) {
-			message << " " << args[i];
-		}
-		connectedSocket.Send(message.str());
+	
+	// In the main thread, we wait for default commands.
+	commandManager.RegisterDefaultCommand([&connectedSocket](const CommandArgs& args) {
+		auto message = args[0];
+		connectedSocket.Send(message);
 		return CommandResult::SUCCESS;
 	});
 

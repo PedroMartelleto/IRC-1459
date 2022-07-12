@@ -15,32 +15,30 @@ flags = -g -Wall -std=c++1z -pthread
 all: server client
 
 server:
-	mkdir build -p
-	g++ $(flags) $(objects) src/serverMain.cpp -o build/server.o
+	mkdir -p build
+	g++ -g -rdynamic $(flags) $(objects) src/serverMain.cpp -o build/server.o
 
 client:
-	mkdir build -p
-	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
+	mkdir -p build
+	g++ -g -rdynamic $(flags) $(objects) src/clientMain.cpp -o build/client.o
 
 rs:
-	stty -icanon
-	mkdir build -p
-	g++ $(flags) $(objects) src/serverMain.cpp -o build/server.o
+	mkdir -p build
+	g++ -g -rdynamic $(flags) $(objects) src/serverMain.cpp -o build/server.o
 	./build/server.o
 
 rc:
-	stty -icanon
-	mkdir build -p
-	g++ $(flags) $(objects) src/clientMain.cpp -o build/client.o
+	mkdir -p build
+	g++ -g -rdynamic $(flags) $(objects) src/clientMain.cpp -o build/client.o
 	./build/client.o
 
 .cpp.o: $*.cpp
-	g++ $*.cpp -c $(flags)
+	g++ -g -rdynamic $*.cpp -c $(flags)
 
 clean:
-	rm ./build/*.o -f
-	rm zip -fr
-	rm *.zip -f
+	rm -f ./build/*.o
+	rm -fr zip 
+	rm -f *.zip
 
 FORCE:
 

@@ -3,9 +3,10 @@
 Client-server chat based on the IRC-1459 specification.
 
 ## Group
- - Antônio Rodrigues Rigolino (11795791)
- - João Marcos Cardoso da Silva (11795314)
+
  - Pedro Martelleto Bressane Rezende (11795641)
+ - João Marcos Cardoso da Silva (11795314)
+ - Antônio Rodrigues Rigolino (11795791)
  
 ## Building
 
@@ -27,14 +28,14 @@ To start the client, run this after the server has already started:
 
 There are three possible commands:
 
-> HELP [cmd]
+> /help [cmd]
 
 If cmd is not specified, lists all commands. Otherwise, displays the requested command's usage and description.
 
-> SEND [msg]
+> /send [msg]
 
 Sends the requested message. Note that the message may contain spaces.
 
-> QUIT
+> /quit
 
 Exits the program.
