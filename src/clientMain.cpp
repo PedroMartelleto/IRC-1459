@@ -4,48 +4,90 @@ int main()
 {
 	Logger::Print("Initializing client...\n");
 	
-	bool hasNickname = false;
-
-	std::string server = "127.0.0.1";
-	std::string port = "8080";
-
-	Socket sock = Socket(server.c_str(), port.c_str());
-
-	// Connects to the server
-	sock.Connect();
-
 	CommandManager commandManager;
 	DefaultCmds::RegisterDefaults(&commandManager);
 	
-	Logger::Print("Enter your nickname: ");
-
+	Ref<Socket> sock = nullptr;
+	
 	// Listener thread that waits for messages from the server.
-	auto listener = std::thread([&sock, server, port]()
+	Ref<std::thread> listener = nullptr;
+	bool hasNickname = false;
+
+	// In the main thread, we wait for SEND and CONNECT commands.
+
+	commandManager.RegisterCommand("connect", { "serverAddress" }, 1, "Connects to a server.", [&listener, &sock](const CommandArgs& args)
 	{
-		// Prints the lines received from the client
-		while (true)
+		if (sock != nullptr)
 		{
-			try
-			{
-				std::string msg = sock.Receive();
-				Logger::Print("%s\n", msg.c_str());
-			}
-			catch (const ConnectionClosedException& e)
-			{
-				Logger::Print("Connection with server %s:%s closed.\n", server.c_str(), port.c_str());
-				break;
-			}
+			Logger::Print("You are already connected to a server.\n");
+			return CommandResult::ERR;
 		}
+
+		std::string port = "8080";
+		auto server = args[0];
+
+		if (server.find(":") != std::string::npos)
+		{
+			std::vector<std::string> tokens = Utils::StringSplit(server, ":");
+			server = tokens[0];
+			port = tokens[1];
+		}
+		else
+		{
+			port = "8080";
+		}
+
+		sock = CreateRef<Socket>(server.c_str(), port.c_str());
+		sock->Connect();
+
+		Logger::Print("Enter your nickname: ");
+
+		listener = CreateRef<std::thread>([&sock, server, port]()
+		{
+			// Prints the lines received from the client
+			while (true)
+			{
+				try
+				{
+					std::string msg = sock->Receive();
+					Logger::Print("%s\n", msg.c_str());
+				}
+				catch (const ConnectionClosedException& e)
+				{
+					Logger::Print("Connection with server %s:%s closed.\n", server.c_str(), port.c_str());
+					break;
+				}
+			}
+		});
+
+		return CommandResult::SUCCESS;
 	});
 
-	// In the main thread, we wait for SEND commands.
+	commandManager.RegisterCommand("ping", {}, 0, "Sends a ping to the server.", [&sock](const CommandArgs& args)
+	{
+		if (sock == nullptr)
+		{
+			Logger::Print("You are not connected to a server.\n");
+			return CommandResult::ERR;
+		}
+		
+		sock->Send("PING");
+		return CommandResult::SUCCESS;
+	});
+
 	commandManager.RegisterDefaultCommand([&sock, &hasNickname](const CommandArgs& args) {
+		if (sock == nullptr)
+		{
+			Logger::Print("You are not connected to a server.\n");
+			return CommandResult::ERR;
+		}
+
 		if (!hasNickname) {
-			sock.Send("NICK " + args[0]);
+			sock->Send("NICK " + args[0]);
 			hasNickname = true;
 		}
 		else {
-			sock.Send(args[0]);
+			sock->Send(args[0]);
 		}
 
 		return CommandResult::SUCCESS;
@@ -53,7 +95,10 @@ int main()
 
 	commandManager.Poll();
 
-	listener.join();
+	if (listener != nullptr)
+	{
+		listener->detach();
+	}
 
 	return 0;
 }

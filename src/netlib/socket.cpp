@@ -240,3 +240,17 @@ void Socket::Close(bool stopSends, bool stopReceives)
 		return;
 	}
 }
+
+Socket& Socket::operator=(const Socket& other)
+{
+	m_socketFile = other.m_socketFile;
+	m_address = other.m_address;
+	return *this;
+}
+
+Socket& Socket::operator=(Socket& other)
+{
+	m_socketFile = other.m_socketFile;
+	m_address = other.m_address;
+	return *this;
+}

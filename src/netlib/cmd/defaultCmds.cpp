@@ -2,11 +2,11 @@
 
 void DefaultCmds::RegisterDefaults(CommandManager* manager)
 {
-    manager->RegisterCommand("/quit", {}, 0, "Exits the program.", [](const CommandArgs& args) {
+    manager->RegisterCommand("quit", {}, 0, "Exits the program.", [](const CommandArgs& args) {
         return CommandResult::EXIT;
     });
 
-    manager->RegisterCommand("/help", { "command" }, 0, "Prints a list of commands or the description of one command.", [manager](const CommandArgs& args)
+    manager->RegisterCommand("help", { "command" }, 0, "Prints a list of commands or the description of one command.", [manager](const CommandArgs& args)
     {
         if (args.size() == 0)
         {

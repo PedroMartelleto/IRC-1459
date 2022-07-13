@@ -4,6 +4,11 @@ Command CommandParser::FromInputText(const std::string& inputText, const Command
 {
     std::vector<std::string> tokens = Utils::StringSplit(inputText, " ");
     
+    for (auto& token : tokens)
+    {
+        Logger::Print("Token: %s\n", token.c_str());
+    }
+
     if (tokens.size() <= 0)
     {
         return Command::Invalid;
@@ -33,6 +38,8 @@ Command CommandParser::FromInputText(const std::string& inputText, const Command
     {
         command.args.push_back(tokens[i + 1]);
     }
+
+    Logger::Print("Sucessfully parsed command: %s\n", tokens[0].c_str());
 
     return command;
 }

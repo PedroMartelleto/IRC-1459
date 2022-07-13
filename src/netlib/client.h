@@ -15,9 +15,4 @@
  */
 class Client {
 public:
-	static std::string GenerateNickname();
-private:
-	static std::vector<std::string> s_nicknames;
-	static std::random_device s_randomDevice;
-	static std::mt19937 s_generator;
 };

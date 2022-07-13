@@ -32,6 +32,10 @@ public:
 	void Close();
 	void Close(bool stopSends, bool stopReceives);
 
+	Socket& operator=(const Socket& other);
+
+	Socket& operator=(Socket& other);
+
 private:
 	// Private constructor used when manually creating a socket
 	Socket() {}
