@@ -6,3 +6,4 @@
 #include "cmd/cmdManager.h"
 #include "cmd/defaultCmds.h"
 #include "threads/logger.h"
+#include "threads/threadSafeVector.h"

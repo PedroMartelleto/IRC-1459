@@ -25,12 +25,12 @@ client:
 rs:
 	mkdir -p build
 	g++ -g -rdynamic $(flags) $(objects) src/serverMain.cpp -o build/server.o
-	./build/server.o
+	gdb -ex run ./build/server.o
 
 rc:
 	mkdir -p build
 	g++ -g -rdynamic $(flags) $(objects) src/clientMain.cpp -o build/client.o
-	./build/client.o
+	gdb -ex run ./build/client.o
 
 .cpp.o: $*.cpp
 	g++ -g -rdynamic $*.cpp -c $(flags)

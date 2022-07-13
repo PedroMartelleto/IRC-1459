@@ -9,12 +9,6 @@ Command CommandParser::FromInputText(const std::string& inputText, const Command
         return Command::Invalid;
     }
 
-    // Sets command name to upper case
-    for (auto & chr: tokens[0])
-    {
-        chr = toupper(chr);
-    }
-
     std::string commandName = tokens[0];
     auto specs = manager.GetCmdSpecsByName(commandName);
 
@@ -27,7 +21,7 @@ Command CommandParser::FromInputText(const std::string& inputText, const Command
 
     if (specs->minArgs > (int)tokens.size() - 1)
     {
-        std::cout << "The command " << tokens[0] << " requires " << specs->minArgs << " arguments, but only " << tokens.size()-1 << " arguments were passed.\n";
+        std::cout << "The command " << tokens[0] << " requires " << specs->minArgs << " arguments, but only " << (tokens.size()-1) << " arguments were passed.\n";
         return Command::Invalid;
     }
     

@@ -57,4 +57,22 @@ namespace Utils
 		float r = static_cast <float>(rand()) / static_cast <float>(RAND_MAX);
 		return min + (max - min) * r;
 	}
+
+	std::string StringLeftTrim(const std::string& str) {
+		std::string s = std::string(str);
+		s.erase(s.begin(), std::find_if(s.begin(), s.end(),
+				std::not1(std::ptr_fun<int, int>(std::isspace))));
+		return s;
+	}
+
+	std::string StringRightTrim(const std::string& str) {
+		std::string s = std::string(str);
+		s.erase(std::find_if(s.rbegin(), s.rend(),
+				std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+		return s;
+	}
+
+	std::string StringTrim(const std::string &str) {
+		return StringLeftTrim(StringRightTrim(str));
+	}
 };

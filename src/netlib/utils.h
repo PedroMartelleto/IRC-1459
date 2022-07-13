@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <iterator>
+#include <algorithm>
 
 namespace Utils
 {
@@ -16,4 +18,10 @@ namespace Utils
 	int RandomInt(int min, int max);
 
 	float FastRandomFloat(float min, float max);
+
+	std::string StringLeftTrim(const std::string& str);
+	
+	std::string StringRightTrim(const std::string& str);
+
+	std::string StringTrim(const std::string &str);
 };

@@ -12,7 +12,7 @@ Ref<CommandSpecs> CommandManager::GetCmdSpecsByName(const std::string& name) con
 }
 
 void CommandManager::RegisterDefaultCommand(const CommandCallback& callback) {
-    *m_defaultCommand = callback;
+    m_defaultCommand = callback;
 }
 
 void CommandManager::RegisterCommand(const std::string& name, const CommandArgs& args, int minArgs, const std::string& description,  const CommandCallback& callback)
@@ -49,7 +49,7 @@ void CommandManager::Poll()
         }
         else if (m_defaultCommand != nullptr)
         {
-            (*m_defaultCommand)({ line });
+            m_defaultCommand({ line });
         }
     }
 }

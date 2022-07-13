@@ -1,5 +1,8 @@
 #pragma once
 
+#include "./commons.h"
+#include <random>
+
 /**
  * @brief A client is anything connecting to a server that is not another
    server.  Each client is distinguished from other clients by a unique
@@ -11,5 +14,10 @@
    host, and the server to which the client is connected.
  */
 class Client {
+public:
+	static std::string GenerateNickname();
 private:
+	static std::vector<std::string> s_nicknames;
+	static std::random_device s_randomDevice;
+	static std::mt19937 s_generator;
 };

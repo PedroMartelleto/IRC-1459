@@ -80,8 +80,6 @@ Socket Socket::Accept()
 		error("accept");
 	}
 
-	Logger::Print("Accepted new connection.\n");
-
 	return newConnection;
 }
 
@@ -178,7 +176,9 @@ void Socket::Send(const std::string& data)
 
 		std::string fragment = data.substr(i * MAX_MSG_LEN, fragmentSize);
 		char* fragmentStr = new char[fragment.length() + 1];
+		
 		strcpy(fragmentStr, fragment.c_str());
+
 		fragments.push_back({
 			fragmentStr, fragment.length()
 		});

@@ -1,9 +1,11 @@
 make --dry-run --keep-going --print-directory
-make: Entering directory `/Users/pedrorezende/Desktop/Projects/IRC-1459'
+make: Entering directory '/home/pedro/Desktop/Projects/IRC-1459'
+ 
+makefile:36: warning: ignoring prerequisites on suffix rule definition
+
 mkdir -p build
 g++ -g -rdynamic -g -Wall -std=c++1z -pthread src/netlib/**/*.cpp src/netlib/*.cpp src/serverMain.cpp -o build/server.o
 mkdir -p build
- 
 g++ -g -rdynamic -g -Wall -std=c++1z -pthread src/netlib/**/*.cpp src/netlib/*.cpp src/clientMain.cpp -o build/client.o
-make: Leaving directory `/Users/pedrorezende/Desktop/Projects/IRC-1459'
+make: Leaving directory '/home/pedro/Desktop/Projects/IRC-1459'
  

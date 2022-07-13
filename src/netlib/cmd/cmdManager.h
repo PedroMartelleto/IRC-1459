@@ -21,5 +21,5 @@ public:
     std::map<std::string, Ref<CommandSpecs>> GetAllSpecs() const;
 private:
     std::map<std::string, Ref<CommandSpecs>> m_commands;
-    Ref<CommandCallback> m_defaultCommand = nullptr;
+    CommandCallback m_defaultCommand = CommandCallback();
 };
