@@ -43,11 +43,10 @@
 //		    - Fix infinite loops when a command is called with too little arguments
 
 // TODO: Client
-//			- Receive errors
+//			- Handle server errors
 //			- /join command
 
 // TODO: Server
-//			- Respond with errors
 //			- Should check if msg was received (retry 5 times)
 //			- Channels
 
