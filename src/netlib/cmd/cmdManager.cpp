@@ -33,11 +33,9 @@ void CommandManager::RunCommand(const std::string& name, const CommandArgs& args
 
 void CommandManager::Poll()
 {
-    while (true)
+    std::string line;
+    while (std::getline(std::cin, line))
     {
-        std::string line;
-        std::getline(std::cin, line);
-
         if (line[0] == '/') {
             auto cmd = GetNextCommand(line);
             auto result = cmd.Run();
@@ -52,6 +50,8 @@ void CommandManager::Poll()
             m_defaultCommand({ line });
         }
     }
+
+    // If we are here, the user has typed Ctrl + D or /quit.
 }
 
 Command CommandManager::GetNextCommand(const std::string& line)

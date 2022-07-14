@@ -1,5 +1,6 @@
 #include "server.h"
 #include "commons.h"
+#include "serverInterpreter.h"
 #include <random>
 #include <time.h>
 
@@ -133,6 +134,7 @@ void Server::Listen()
         // Adds a new client to the list of connected clients
 		auto client = CreateRef<ConnectedClient>(ConnectedClient{ temporaryNickname, connectedSocket });
         
+        // Spawns a thread to listen for incoming messages from the new client
         m_clientsMutex.lock();
 
 		m_clients[temporaryNickname] = client;
@@ -144,6 +146,12 @@ void Server::Listen()
     }
 }
 
+void Server::SendToClient(const std::string& msg, const std::string& nickname)
+{
+	Logger::Print("%s\n", msg.c_str());
+    m_clients[nickname]->sock.Send(msg);
+}
+
 Ref<std::thread> Server::SpawnConnectionListener(const std::string& temporaryNickname)
 {
     auto client = m_clients[temporaryNickname];
@@ -151,54 +159,16 @@ Ref<std::thread> Server::SpawnConnectionListener(const std::string& temporaryNic
     // Spawns a listener thread that waits for messages being received from that socket.
     return CreateRef<std::thread>([client, this, temporaryNickname]()
     {
-        bool hasTemporaryNickname = true;
+        ServerInterpreter interpreter(this, client);
+        interpreter.RegisterMessages();
 
-        // Prints the lines received from the client
-        while (true)
-        {
-            try
-            {
-                std::string msg = client->sock.Receive();
-                bool isNickMessage = msg.substr(0, 5) == "NICK ";
-
-                if (hasTemporaryNickname && !isNickMessage)
-                {
-                    continue;
-                }
-
-                if (isNickMessage)
-                {
-                    auto nickname = Utils::StringTrim(msg.substr(5));
-                    
-                    if (Server::IsValidNickname(nickname) && Server::IsNicknameUnique(nickname))
-                    {
-                        m_clientsMutex.lock();
-                        
-                        auto oldNickname = client->nickname;
-
-                        client->nickname = nickname;
-						m_clients[client->nickname] = client;
-						m_clients.erase(temporaryNickname);
-                        m_clientsMutex.unlock();
-
-                        if (hasTemporaryNickname)
-                        {
-						    Broadcast(nickname + " has joined the chat.", client);
-                        }
-                        else
-                        {
-                            Broadcast(oldNickname + " changed their nickname to " + nickname + ".", nullptr);
-                        }
-
-						hasTemporaryNickname = false;
-                    }
-                }
-                else
-                {
-                    Broadcast(client->nickname + ": " + msg, client);
-                }
-            }
-            catch (const ConnectionClosedException& e)
+		while (true)
+		{
+			try
+			{
+				interpreter.Interpret(client->sock.Receive());
+			}
+			catch (const ConnectionClosedException& e)
             {
                 Logger::Print("Client %s disconnected.\n", client->nickname.c_str());
                 m_clientsMutex.lock();
@@ -212,6 +182,6 @@ Ref<std::thread> Server::SpawnConnectionListener(const std::string& temporaryNic
 
                 break; // Ensures that this thread is terminated
             }
-        }
+		}
     });
 }

@@ -2,27 +2,6 @@
 #include <sstream>
 #include <thread>
 
-// TODO: Validate characters (see IRC)
-
-// TODO: How will ping work?
-
-// TODO: Client
-//			- Error handling
-//			- Automate command sends
-//			- /join, /nick command
-
-// TODO: Server
-//			- Should check if msg was received (retry 5 times)
-//			- Channels
-
-// TODO: Admin clients
-//			- /kick, /mute, /unmute, /whois
-
-// TODO: Commands
-//			- Handle Ctrl + C, replace with Ctrl + D
-
-// TODO: Invites
-
 int main()
 {
 	Logger::Print("Initializing server...\n");
@@ -36,8 +15,6 @@ int main()
 	auto listenThread = std::thread([&server]() {
 		server.Listen();
 	});
-
-	// TODO: How to clean up if server is sleeping?
 
 	commandManager.Poll();
 

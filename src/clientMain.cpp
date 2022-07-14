@@ -1,5 +1,24 @@
 #include "./netlib/netlib.h"
 
+// TODO: Validate characters (see IRC)
+
+// TODO: Client
+//			- Receive errors
+//			- /join command
+
+// TODO: Server
+//			- Respond with errors
+//			- Should check if msg was received (retry 5 times)
+//			- Channels
+
+// TODO: Admin clients
+//			- /kick, /mute, /unmute, /whois
+
+// TODO: Commands
+//			- Handle Ctrl + C, replace with Ctrl + D
+
+// TODO: Invites
+
 int main()
 {
 	Logger::Print("Initializing client...\n");
@@ -15,7 +34,7 @@ int main()
 
 	// In the main thread, we wait for SEND and CONNECT commands.
 
-	commandManager.RegisterCommand("connect", { "serverAddress" }, 1, "Connects to a server.", [&listener, &sock](const CommandArgs& args)
+	commandManager.RegisterCommand("connect", { "serverAddress" }, 1, "Connects to a server.", [&commandManager, &listener, &sock](const CommandArgs& args)
 	{
 		if (sock != nullptr)
 		{
@@ -41,6 +60,12 @@ int main()
 		sock->Connect();
 
 		Logger::Print("Enter your nickname: ");
+
+		// Registers simple socket commands that are easily converted to the IRC protocol and sent over the socket.
+		SocketCmds::RegisterSocketCommands(&commandManager, sock.get(), {
+			SocketCommandSpec { "ping", { "nickname" }, "Pings the nickname specified. The other user must be connected to the same server." },
+			SocketCommandSpec { "nick", { "nickname" }, "Updates the user's nickname." }
+		});
 
 		listener = CreateRef<std::thread>([&sock, server, port]()
 		{

@@ -4,6 +4,7 @@
 #include <thread>
 #include "threads/logger.h"
 #include "socket.h"
+#include "ircMessageInterpreter.h"
 
 /**
  * @brief The server forms the backbone of IRC, providing a point to which
@@ -36,18 +37,28 @@
  * 
  */
 
-// TODO: Fix disconnects
-// TODO: Server should check if msg was received (retry 5 times)
-// TODO: Handle Ctrl + C, replace with Ctrl + D
-// TODO: /connect /ping
+// TODO: Bugs
+//			- Server only receives the first message sent by the client.
+//			- Ping has to little arguments bug
+//		    - Fix infinite loops when a command is called with too little arguments
 
-// TODO: /join client command
-// TODO: Admin /kick /mute /unmute /whois
-// TODO: /nickname
+// TODO: Client
+//			- Receive errors
+//			- /join command
 
-// TODO: invites
+// TODO: Server
+//			- Respond with errors
+//			- Should check if msg was received (retry 5 times)
+//			- Channels
 
-struct ConnectedClient {
+// TODO: Admin clients
+//			- /kick, /mute, /unmute, /whois
+
+// TODO: Invites
+
+
+struct ConnectedClient
+{
 	std::string nickname;
 	Socket sock;
 	Ref<std::thread> listener = nullptr;
@@ -57,29 +68,34 @@ struct ConnectedClient {
 	ConnectedClient& operator=(ConnectedClient& other);
 };
 
-class Server {
+class Server
+{
+public:
+	friend class ServerInterpreter;
+
+	static bool IsValidNickname(const std::string& nickname);
+	static std::string CreateTemporaryNickname();
+
+	Server(int port);
+	
+	void CreateValidationFunctions();
+	void CleanupThreads();
+	void Listen();
+
+	void SendToClient(const std::string& msg, const std::string& nickname);
+	void Broadcast(const std::string& msg, const Ref<ConnectedClient>& excludeClient = nullptr);
+	bool IsNicknameUnique(const std::string& nickname);
+
+	Ref<std::thread> SpawnConnectionListener(const std::string& temporaryNickname);
 private:
 	static int s_defaultPort;
 
 	std::map<std::string, Ref<ConnectedClient>> m_clients;
 	std::mutex m_clientsMutex;
 
-  std::vector<Ref<std::thread>> m_deletedThreads;
-  std::mutex m_deletedThreadsMutex;
+	std::vector<Ref<std::thread>> m_deletedThreads;
+	std::mutex m_deletedThreadsMutex;
 
 	int m_port;
-	Socket m_sock;
-public:
-	static bool IsValidNickname(const std::string& nickname);
-	static std::string CreateTemporaryNickname();
-
-	Server(int port);
-
-  void CleanupThreads();
-	void Listen();
-
-	void Broadcast(const std::string& msg, const Ref<ConnectedClient>& excludeClient = nullptr);
-	bool IsNicknameUnique(const std::string& nickname);
-
-	Ref<std::thread> SpawnConnectionListener(const std::string& temporaryNickname);
+	Socket m_sock;	
 };
