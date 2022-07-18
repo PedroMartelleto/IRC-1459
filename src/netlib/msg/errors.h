@@ -2,7 +2,7 @@
 
 #include "../utils.h"
 
-const std::map<std::string, std::string> ERR_CODES =
+static const std::map<std::string, std::string> ERR_CODES =
 {
     {"ERR_NOSUCHNICK", "401"},
     {"ERR_NOSUCHSERVER", "402"},
@@ -30,4 +30,4 @@ const std::map<std::string, std::string> ERR_CODES =
     {"ERR_USERSDONTMATCH", "502"}
 };
     
-// auto ERR_NAMES = Utils::ReverseMap(ERR_CODES);
+static auto ERR_NAMES = Utils::ReverseMap(ERR_CODES);

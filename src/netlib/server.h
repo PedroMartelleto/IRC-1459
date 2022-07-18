@@ -37,14 +37,10 @@
  * 
  */
 
-// TODO: Bugs
-
 // TODO: Client
-//			- Handle server errors
 //			- /join command
 
 // TODO: Server
-//			- Should check if msg was received (retry 5 times) (basic version implemented inside the Socket::SendFragment function, check later if it works)
 //			- Channels
 
 // TODO: Admin clients

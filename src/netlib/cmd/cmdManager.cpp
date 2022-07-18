@@ -37,7 +37,7 @@ void CommandManager::Poll()
     {
         PollEventsLoop();
     }
-    catch (int error)
+    catch (...)
     {
         PollEventsLoop();
     }
