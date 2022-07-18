@@ -117,16 +117,25 @@ Server::Server(int port) :
     m_sock.Bind();
 }
 
-void Server::Broadcast(const std::string& msg, const Ref<ConnectedClient>& excludeClient)
+void Server::Broadcast(const std::string& msg)
 {
     Logger::Print("%s\n", msg.c_str());
     
     for (auto& [_, client] : m_clients)
     {
-        if (client != excludeClient)
-        {
-            client->sock.Send(msg);
-        }
+        client->sock.Send(msg);   
+    }
+}
+
+void Server::BroadcastChannel(const std::string& channel, const std::string& msg)
+{
+    Logger::Print("%s\n", msg.c_str());
+    
+    const Ref<Channel>& c = m_channels.at(channel);
+
+    for (auto& user : c->users)
+    {
+        m_clients.at(user.nickname) -> sock.Send(msg);
     }
 }
 

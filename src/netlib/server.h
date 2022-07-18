@@ -4,6 +4,7 @@
 #include <thread>
 #include "threads/logger.h"
 #include "socket.h"
+#include "channel.h"
 #include "ircMessageInterpreter.h"
 
 /**
@@ -55,6 +56,8 @@ struct ConnectedClient
 	Socket sock;
 	Ref<std::thread> listener = nullptr;
 
+	std::string channel;
+
 	bool operator==(const ConnectedClient& other) const;
 	ConnectedClient& operator=(const ConnectedClient& other);
 	ConnectedClient& operator=(ConnectedClient& other);
@@ -76,7 +79,8 @@ public:
 	void Listen();
 
 	void SendToClient(const std::string& msg, const std::string& nickname);
-	void Broadcast(const std::string& msg, const Ref<ConnectedClient>& excludeClient = nullptr);
+	void Broadcast(const std::string& msg);
+	void BroadcastChannel(const std::string& msg, const std::string& channel);
 	bool IsNicknameUnique(const std::string& nickname);
 
 	Ref<std::thread> SpawnConnectionListener(const std::string& temporaryNickname);
@@ -91,4 +95,7 @@ private:
 
 	int m_port;
 	Socket m_sock;	
+
+	std::map<std::string, Ref<Channel> > m_channels;
+	std::mutex m_channelsMutex;
 };

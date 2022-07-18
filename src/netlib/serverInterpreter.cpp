@@ -89,6 +89,14 @@ void ServerInterpreter::RegisterMessages()
         },
         noValidator
     );
+
+    m_interpreter.RegisterMessage("JOIN", { "channel" },
+        [this](const std::vector<std::string>& args)
+        {
+            
+        },
+        noValidator
+    );
 }
 
 void ServerInterpreter::Interpret(const std::string& msg) 
