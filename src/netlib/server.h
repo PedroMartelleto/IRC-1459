@@ -66,6 +66,7 @@ public:
 	friend class ServerInterpreter;
 
 	static bool IsValidNickname(const std::string& nickname);
+	static bool IsValidChannelName(const std::string& channel);
 	static std::string CreateTemporaryNickname();
 
 	Server(int port);

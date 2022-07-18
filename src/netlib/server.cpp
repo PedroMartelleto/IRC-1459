@@ -3,6 +3,8 @@
 #include "serverInterpreter.h"
 #include <random>
 #include <time.h>
+#include <signal.h>
+#include <set>
 
 // MARK: - ConnectedClient
 
@@ -32,10 +34,48 @@ ConnectedClient& ConnectedClient::operator=(ConnectedClient& other)
 
 int Server::s_defaultPort = 8080;
 
+const std::set<char> forbiddenNicknameCharacters = {
+    (char)7, SIGTERM, SIGINT, ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'
+};
+
+const std::set<char> forbiddenChannelCharacters = {
+    (char)7, SIGTERM, SIGINT, ' ', ','
+};
+
 bool Server::IsValidNickname(const std::string& nickname)
 {
-	// TODO: Validate characters (see IRC), modularize
-	return nickname.length() <= 50;
+    if (nickname.length() < 1)
+    {
+        return false;
+    }
+
+    for (char c : nickname)
+    {
+        if (std::find(forbiddenNicknameCharacters.begin(), forbiddenNicknameCharacters.end(), c) != forbiddenNicknameCharacters.end())
+        {
+            return false;
+        }
+    }
+
+    return nickname.length() <= 50;
+}
+
+bool Server::IsValidChannelName(const std::string& channel)
+{
+    if (channel.length() < 1 || channel.length() > 50 || (channel[0] != '#' && channel[0] != '&'))
+    {
+        return false;
+    }
+
+    for (char c : channel)
+    {
+        if (std::find(forbiddenChannelCharacters.begin(), forbiddenChannelCharacters.end(), c) != forbiddenNicknameCharacters.end())
+        {
+            return false;
+        }
+    }
+
+    return channel.length() <= 50;
 }
 
 std::string Server::CreateTemporaryNickname()
