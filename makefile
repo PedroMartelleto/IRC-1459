@@ -44,6 +44,12 @@ rs: server
 rc: client
 	./build/client
 
+gs: server
+	gdb ./build/server -tui
+
+gc: client
+	gdb ./build/client -tui
+
 clean:
 	rm -f ./build/*.o
 	rm -fr zip 
