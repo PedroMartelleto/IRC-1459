@@ -81,8 +81,6 @@ void Server::Broadcast(const std::string& msg, const Ref<ConnectedClient>& exclu
 {
     Logger::Print("%s\n", msg.c_str());
     
-    m_clientsMutex.lock();
-
     for (auto& [_, client] : m_clients)
     {
         if (client != excludeClient)
@@ -90,8 +88,6 @@ void Server::Broadcast(const std::string& msg, const Ref<ConnectedClient>& exclu
             client->sock.Send(msg);
         }
     }
-
-    m_clientsMutex.unlock();
 }
 
 bool Server::IsNicknameUnique(const std::string& nickname)
