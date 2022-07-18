@@ -37,15 +37,10 @@
  * 
  */
 
-// TODO: Bugs
-//			- Ping has to little arguments bug
-
 // TODO: Client
-//			- Handle server errors
 //			- /join command
 
 // TODO: Server
-//			- Should check if msg was received (retry 5 times)
 //			- Channels
 
 // TODO: Admin clients
