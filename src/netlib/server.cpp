@@ -35,14 +35,14 @@ int Server::s_defaultPort = 8080;
 bool Server::IsValidNickname(const std::string& nickname)
 {
 	// TODO: Validate characters (see IRC), modularize
-	return nickname.length() <= 9;
+	return nickname.length() <= 50;
 }
 
 std::string Server::CreateTemporaryNickname()
 {
     std::stringstream stream;
 
-    for (int i = 0; i < 9; i++)
+    for (int i = 0; i < 50; i++)
     {
         // Random char or digit
         char x = (char) (rand() % 10 + '0');
