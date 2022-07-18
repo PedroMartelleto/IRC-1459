@@ -1,12 +1,10 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include <set>
-
-struct User {
-    std::string nickname;
-    bool isMuted;
-    bool isAdmin;
-};
+#include "server.h"
+#include "connectedClient.h"
 
 class Channel {
 public:
@@ -15,7 +13,7 @@ public:
     
     bool isInviteOnly;
 
-    std::vector<User> users;
+    std::vector<ConnectedClient> users;
 
     std::set<std::string> invites;
 };

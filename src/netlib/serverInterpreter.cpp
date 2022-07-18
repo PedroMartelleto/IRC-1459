@@ -68,11 +68,11 @@ void ServerInterpreter::RegisterMessages()
 
             if (m_hasTemporaryNickname)
             {
-                m_server->Broadcast(nickname + " has joined the chat.", m_client);
+                m_server->Broadcast(nickname + " has joined the chat.");
             }
             else
             {
-                m_server->Broadcast(oldNickname + " changed their nickname to " + nickname + ".", nullptr);
+                m_server->Broadcast(oldNickname + " changed their nickname to " + nickname + ".");
             }
 
             m_hasTemporaryNickname = false;
@@ -93,7 +93,19 @@ void ServerInterpreter::RegisterMessages()
     m_interpreter.RegisterMessage("JOIN", { "channel" },
         [this](const std::vector<std::string>& args)
         {
-            
+            // auto channel = Utils::StringTrim(args[0]);
+            // auto nickname = m_client->nickname;
+
+            // if (m_server->m_channels.find(channel) == m_server->m_channels.end())
+            // {
+            //     m_server->m_channels[channel] = CreateRef<Channel>(Channel{ channel });
+            // }
+
+            // m_server->m_channels[channel]->users[nickname] = nickname;
+            // m_server->Broadcast(nickname + " has joined " + channel + ".", nullptr);
+
+            // return RPL_CODES.at("RPL_TOPIC");
+            return "";
         },
         noValidator
     );

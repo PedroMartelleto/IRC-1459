@@ -5,6 +5,7 @@
 #include "threads/logger.h"
 #include "socket.h"
 #include "channel.h"
+#include "connectedClient.h"
 #include "ircMessageInterpreter.h"
 
 /**
@@ -49,19 +50,6 @@
 
 // TODO: Invites
 
-
-struct ConnectedClient
-{
-	std::string nickname;
-	Socket sock;
-	Ref<std::thread> listener = nullptr;
-
-	std::string channel;
-
-	bool operator==(const ConnectedClient& other) const;
-	ConnectedClient& operator=(const ConnectedClient& other);
-	ConnectedClient& operator=(ConnectedClient& other);
-};
 
 class Server
 {
