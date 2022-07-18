@@ -9,31 +9,40 @@
 # make rs: compila e roda o servidor.
 #=======================================================
 
-objects = src/netlib/**/*.cpp src/netlib/*.cpp
-flags = -g -Wall -std=c++1z -pthread
+flags = -g -Wall -std=c++1z -pthread -rdynamic
+
+# lists all subdirectories inside src
+srcdirs = src/netlib/ src/netlib/**/
+objdirs = $(patsubst src/netlib/%, build/%, $(wildcard $(srcdirs)))
+
+sources = $(foreach d, $(srcdirs), $(wildcard $(d)*.cpp))
+objects = $(patsubst src/netlib/%.cpp, build/%.o, $(sources))
 
 all: server client
 
-server:
-	mkdir -p build
-	g++ -g -rdynamic $(flags) $(objects) src/serverMain.cpp -o build/server.o
+server: $(objdirs) $(objects) build/serverMain.o
+	g++ $(objects) build/serverMain.o -o build/server $(flags)
 
-client:
-	mkdir -p build
-	g++ -g -rdynamic $(flags) $(objects) src/clientMain.cpp -o build/client.o
+client: $(objdirs) $(objects) build/clientMain.o
+	g++ $(objects) build/clientMain.o -o build/client $(flags)
 
-rs:
-	mkdir -p build
-	g++ -g -rdynamic $(flags) $(objects) src/serverMain.cpp -o build/server.o
-	gdb -ex run ./build/server.o
+build/%.o: src/netlib/%.cpp
+	g++ -c $(flags) -o $@ $<
 
-rc:
-	mkdir -p build
-	g++ -g -rdynamic $(flags) $(objects) src/clientMain.cpp -o build/client.o
-	gdb -ex run ./build/client.o
+build/serverMain.o: src/serverMain.cpp
+	g++ -c $(flags) -o $@ $<
 
-.cpp.o: $*.cpp
-	g++ -g -rdynamic $*.cpp -c $(flags)
+build/clientMain.o: src/clientMain.cpp
+	g++ -c $(flags) -o $@ $<
+
+$(objdirs):
+	mkdir -p $@	
+
+rs: server
+	./build/server
+
+rc: client
+	./build/client
 
 clean:
 	rm -f ./build/*.o
