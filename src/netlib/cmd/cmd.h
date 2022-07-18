@@ -15,6 +15,7 @@ using CommandCallback = std::function<CommandResult(const CommandArgs&)>;
 
 struct CommandSpecs
 {
+    static const CommandCallback EmptyCallback;
     static const CommandSpecs Empty;
 
     std::string name;

@@ -57,15 +57,7 @@ void CommandManager::Poll()
 Command CommandManager::GetNextCommand(const std::string& line)
 {
     auto parsedCommand = CommandParser::FromInputText(line.substr(1), *this);
-
-    if (parsedCommand.specs == Command::Invalid.specs)
-    {
-        return GetNextCommand(line);
-    }
-    else
-    {
-        return parsedCommand;
-    }
+    return parsedCommand;
 }
 
 std::map<std::string, Ref<CommandSpecs>> CommandManager::GetAllSpecs() const

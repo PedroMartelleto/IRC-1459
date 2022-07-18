@@ -1,7 +1,9 @@
 #include "cmd.h"
 
-const CommandSpecs CommandSpecs::Empty = CommandSpecs{"", {}, "", {}, -1};
-const Command Command::Invalid = Command{nullptr, {}};
+const CommandCallback CommandSpecs::EmptyCallback = [](const CommandArgs&) { return CommandResult::ERR; };
+
+const CommandSpecs CommandSpecs::Empty = CommandSpecs{"", {}, "", EmptyCallback, 0};
+const Command Command::Invalid = Command{std::make_shared<CommandSpecs>(CommandSpecs::Empty), {}};
 
 bool CommandSpecs::operator==(const CommandSpecs& other) const
 {
