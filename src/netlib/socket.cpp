@@ -109,17 +109,26 @@ void Socket::Connect()
 
 void Socket::SendFragment(const char* fragment, int fragmentSize)
 {
-	int bytesSent = send(m_socketFile, fragment, fragmentSize, 0);
+	for (int i = 0; i < 5; i++){
+		int bytesSent = send(m_socketFile, fragment, fragmentSize, 0);
 
-	if (bytesSent == -1)
-	{
-		error("send");
+		// If the send succeeded, return
+		// Since we're using TCP, it means the message was delivered
+		if (bytesSent > 0) return;
+
+		// If the send failed with EAGAIN or ETIMEDOUT, try again
+		if (bytesSent == -1 && (errno == ETIMEDOUT || errno == EAGAIN))
+		{
+			std::cerr << "Attempt " << i << " failed. Retrying..." << std::endl;
+			continue;
+		}
+
+		// If the send failed for another reason, close the connection
+		if ((bytesSent == -1 && errno == EPIPE) || bytesSent == 0) break;
+		
 	}
 
-	if (bytesSent == 0)
-	{
-		throw ConnectionClosedException();
-	}
+	throw ConnectionClosedException();
 }
 
 char* Socket::ReceiveFragment()
