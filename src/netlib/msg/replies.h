@@ -2,7 +2,7 @@
 
 #include "../utils.h"
 
-const std::map<std::string, std::string> RPL_CODES =
+static const std::map<std::string, std::string> RPL_CODES =
 {
     // Not really an IRC reply, but useful for returning no errors in the validation functions.
     {"PIPE_VALID", "000"},
@@ -71,4 +71,4 @@ const std::map<std::string, std::string> RPL_CODES =
     {"RPL_TIME", "391"}
 };
 
-// auto RPL_NAMES = Utils::ReverseMap(RPL_CODES);
+static auto RPL_NAMES = Utils::ReverseMap(RPL_CODES);

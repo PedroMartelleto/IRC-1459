@@ -12,10 +12,12 @@ int main()
 	// Listener thread that waits for messages from the server.
 	Ref<std::thread> listener = nullptr;
 	bool hasNickname = false;
+	std::mutex replyCallbacksMutex;
+	std::vector<std::function<void(int)>> replyCallbacks;
 
 	// In the main thread, we wait for SEND and CONNECT commands.
 
-	commandManager.RegisterCommand("connect", { "serverAddress" }, 1, "Connects to a server.", [&commandManager, &listener, &sock](const CommandArgs& args)
+	commandManager.RegisterCommand("connect", { "serverAddress" }, 1, "Connects to a server.", [&commandManager, &listener, &sock, &replyCallbacks, &replyCallbacksMutex](const CommandArgs& args)
 	{
 		if (sock != nullptr)
 		{
@@ -48,14 +50,68 @@ int main()
 			SocketCommandSpec { "nick", { "nickname" }, "Updates the user's nickname." }
 		});
 
-		listener = CreateRef<std::thread>([&sock, server, port]()
+		listener = CreateRef<std::thread>([&sock, &replyCallbacks, &replyCallbacksMutex, server, port]()
 		{
 			// Prints the lines received from the client
 			while (true)
 			{
 				try
 				{
-					std::string msg = sock->Receive();
+					const std::string msg = sock->Receive();
+					const auto trimmedMsg = Utils::StringTrim(msg);
+
+					// Checks for server respones with 3 digits.
+					if (trimmedMsg.size() == 3)
+					{
+						try
+						{
+							// Interprets the response and prints it.
+							int code = std::stoi(trimmedMsg);
+
+							if (code < 1 || code > 1000)
+							{
+								Logger::Print("Server responded with invalid reply code: %s\n", trimmedMsg.c_str());
+								continue;
+							}
+							
+							if (code >= 1 && code < 400)
+							{
+								if (RPL_NAMES.find(trimmedMsg) != RPL_NAMES.end())
+								{
+									Logger::Print("[%d] %s\n", code, RPL_NAMES[trimmedMsg].c_str());
+								}
+								else
+								{
+									Logger::Print("Server responded with [%d].\n", code);
+								}
+							}
+							else
+							{
+								if (ERR_NAMES.find(trimmedMsg) != ERR_NAMES.end())
+								{
+									Logger::Print("[%d] %s\n", code, ERR_NAMES[trimmedMsg].c_str());
+								}
+								else
+								{
+									Logger::Print("Server responded with error [%d].\n", code);
+								}
+							}
+
+							if (replyCallbacks.size() > 0)
+							{
+								replyCallbacksMutex.lock();
+								auto callback = replyCallbacks[replyCallbacks.size() - 1];
+								replyCallbacks.pop_back();
+								replyCallbacksMutex.unlock();
+								callback(code);
+							}
+
+							continue;
+						}
+						catch (const std::exception& e) {}
+					}
+
+					// Otherwise, just echoes the message.
 					Logger::Print("%s\n", msg.c_str());
 				}
 				catch (const ConnectionClosedException& e)
@@ -81,7 +137,7 @@ int main()
 		return CommandResult::SUCCESS;
 	});
 
-	commandManager.RegisterDefaultCommand([&sock, &hasNickname](const CommandArgs& args) {
+	commandManager.RegisterDefaultCommand([&sock, &hasNickname, &replyCallbacks, &replyCallbacksMutex](const CommandArgs& args) {
 		if (sock == nullptr)
 		{
 			Logger::Print("You are not connected to a server.\n");
@@ -90,7 +146,14 @@ int main()
 
 		if (!hasNickname) {
 			sock->Send("NICK " + args[0]);
-			hasNickname = true;
+			replyCallbacksMutex.lock();
+			replyCallbacks.push_back([&hasNickname](int replyCode) {
+				if (replyCode < 400)
+				{
+					hasNickname = true;
+				}
+			});
+			replyCallbacksMutex.unlock();
 		}
 		else {
 			sock->Send(args[0]);
