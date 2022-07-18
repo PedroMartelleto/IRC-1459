@@ -22,4 +22,6 @@ public:
 private:
     std::map<std::string, Ref<CommandSpecs>> m_commands;
     CommandCallback m_defaultCommand = CommandCallback();
+
+    void PollEventsLoop();
 };

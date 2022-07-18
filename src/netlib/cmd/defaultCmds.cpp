@@ -4,7 +4,7 @@
 
 void DefaultCmds::RegisterDefaults(CommandManager* manager)
 {
-    signal(SIGINT, [](int sigNum) { Logger::Print("SIGINT is disabled. Use EOF (Ctrl + D) or the command /quit instead.\n"); });
+    signal(SIGINT, SIG_IGN);
 
     manager->RegisterCommand("quit", {}, 0, "Exits the program.", [](const CommandArgs& args) {
         return CommandResult::EXIT;

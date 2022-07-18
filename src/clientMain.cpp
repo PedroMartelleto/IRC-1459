@@ -1,24 +1,5 @@
 #include "./netlib/netlib.h"
 
-// TODO: Validate characters (see IRC)
-
-// TODO: Client
-//			- Receive errors
-//			- /join command
-
-// TODO: Server
-//			- Respond with errors
-//			- Should check if msg was received (retry 5 times)
-//			- Channels
-
-// TODO: Admin clients
-//			- /kick, /mute, /unmute, /whois
-
-// TODO: Commands
-//			- Handle Ctrl + C, replace with Ctrl + D
-
-// TODO: Invites
-
 int main()
 {
 	Logger::Print("Initializing client...\n");

@@ -33,6 +33,20 @@ void CommandManager::RunCommand(const std::string& name, const CommandArgs& args
 
 void CommandManager::Poll()
 {
+    try
+    {
+        PollEventsLoop();
+    }
+    catch (int error)
+    {
+        PollEventsLoop();
+    }
+
+    // If we are here, the user has typed Ctrl + D or /quit.
+}
+
+void CommandManager::PollEventsLoop()
+{
     std::string line;
     while (std::getline(std::cin, line))
     {
@@ -50,8 +64,6 @@ void CommandManager::Poll()
             m_defaultCommand({ line });
         }
     }
-
-    // If we are here, the user has typed Ctrl + D or /quit.
 }
 
 Command CommandManager::GetNextCommand(const std::string& line)

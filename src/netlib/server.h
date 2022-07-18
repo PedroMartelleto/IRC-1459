@@ -38,9 +38,7 @@
  */
 
 // TODO: Bugs
-//			- Server only receives the first message sent by the client.
 //			- Ping has to little arguments bug
-//		    - Fix infinite loops when a command is called with too little arguments
 
 // TODO: Client
 //			- Handle server errors
