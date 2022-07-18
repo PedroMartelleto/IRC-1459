@@ -15,5 +15,13 @@
  */
 class Client {
 public:
-	
+	void RegisterReplyCallback(const std::function<void(int)>& callback);
+	void InterpretMessage(const std::string& message);
+
+	bool HasNickname() const;
+	void SetHasNickname(bool hasNickname);
+private:
+	std::mutex m_replyCallbacksMutex;
+	std::vector<std::function<void(int)>> m_replyCallbacks;
+	bool m_hasNickname = false;
 };
