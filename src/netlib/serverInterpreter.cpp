@@ -82,7 +82,7 @@ void ServerInterpreter::RegisterMessages()
         newNicknameValidator
     );
 
-    m_interpreter.RegisterMessage("PING", { "ping" },
+    m_interpreter.RegisterMessage("PING", { },
         [](const std::vector<std::string>& args)
         {
             return "PONG";
