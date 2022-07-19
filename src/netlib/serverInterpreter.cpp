@@ -56,7 +56,7 @@ void ServerInterpreter::RegisterMessages()
         return RPL_CODES.at("PIPE_VALID");
     };
 
-    IRCMessageValidator sourceClientIsAdmin = [this](const IRCMessageArgs&)
+    IRCMessageValidator sourceClientIsAdmin = [this](const IRCMessageArgs& args)
     {
         if (!m_client->isOperator)
         {
@@ -82,6 +82,17 @@ void ServerInterpreter::RegisterMessages()
     IRCMessageValidator channelArg2Exists = [this](const IRCMessageArgs& args)
     {
         auto channel = args[1];
+        if (m_server->m_channels.find(channel) == m_server->m_channels.end())
+        {
+            return ERR_CODES.at("ERR_NOSUCHCHANNEL");
+        }
+
+        return RPL_CODES.at("PIPE_VALID");
+    };
+
+    IRCMessageValidator channelArg1Exists = [this](const IRCMessageArgs& args)
+    {
+        auto channel = args[0];
         if (m_server->m_channels.find(channel) == m_server->m_channels.end())
         {
             return ERR_CODES.at("ERR_NOSUCHCHANNEL");
@@ -275,6 +286,63 @@ void ServerInterpreter::RegisterMessages()
             return RPL_CODES.at("RPL_INVITED");
         },
         Pipe(sourceAdminAndTargetExistsValidator, channelArg2Exists)
+    );
+
+    m_interpreter.RegisterMessage("MODE", { "channel", "modes" },
+        [this](const std::vector<std::string>& args)
+        {
+            auto channel = args[0];
+
+            // Checks if the operator is in the channel.
+            if (m_client->channel != channel)
+            {
+                return ERR_CODES.at("ERR_USERNOTINCHANNEL");
+            }
+            
+            auto modes = Utils::StringTrim(args[1]);
+            
+            // Checks for give/remove operator mode.
+            if (modes == "+o")
+            {
+                if (args.size() < 3) return ERR_CODES.at("ERR_NEEDMOREPARAMS");
+                auto targetUser = args[2];
+
+                if (m_server->m_clients[targetUser]->channel != channel)
+                {
+                    return ERR_CODES.at("ERR_USERNOTINCHANNEL");
+                }
+
+                m_server->m_clients[targetUser]->isOperator = true;
+                return RPL_CODES.at("RPL_MODEUPDATED");
+            }
+            else if (modes == "-o")
+            {
+                if (args.size() < 3) return ERR_CODES.at("ERR_NEEDMOREPARAMS");
+                auto targetUser = args[2];
+
+                if (m_server->m_clients[targetUser]->channel != channel)
+                {
+                    return ERR_CODES.at("ERR_USERNOTINCHANNEL");
+                }
+
+                m_server->m_clients[targetUser]->isOperator = false;
+                return RPL_CODES.at("RPL_MODEUPDATED");
+            }
+            // Checks for enable/disable invite only modes
+            else if (modes == "+i")
+            {
+                m_server->m_channels[channel]->isInviteOnly = true;
+                return RPL_CODES.at("RPL_MODEUPDATED");
+            }
+            else if (modes == "-i")
+            {
+                m_server->m_channels[channel]->isInviteOnly = false;
+                return RPL_CODES.at("RPL_MODEUPDATED");
+            }
+
+            return ERR_CODES.at("ERR_UNKNOWNMODE");
+        },
+        Pipe(sourceClientIsAdmin, channelArg1Exists)
     );
 }
 
