@@ -103,15 +103,20 @@ void Server::Broadcast(const std::string& msg)
     }
 }
 
-void Server::BroadcastChannel(const std::string& channel, const std::string& msg)
+void Server::BroadcastChannel(const std::string& msg, const std::string& channel)
 {
-    Logger::Print("%s\n", msg.c_str());
-    
-    const Ref<Channel>& c = m_channels.at(channel);
 
+    if (m_channels.find(channel) == m_channels.end())
+        return;
+    
+
+    Logger::Print("%s\n", msg.c_str());
+
+    Ref<Channel> c = m_channels[channel];
+    
     for (auto& user : c->users)
     {
-        m_clients.at(user.nickname) -> sock.Send(msg);
+        m_clients.at(user -> nickname) -> sock.Send(msg);
     }
 }
 

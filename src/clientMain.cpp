@@ -68,6 +68,19 @@ int main()
 		return CommandResult::SUCCESS;
 	});
 
+	commandManager.RegisterCommand("join", { "channel" }, 1, "Joins a channel.", [&sock](const CommandArgs& args)
+	{
+		if (sock == nullptr)
+		{
+			Logger::Print("You are not connected to a server.\n");
+			return CommandResult::ERR;
+		}
+		
+		sock -> Send("JOIN " + args[0]);
+
+		return CommandResult::SUCCESS;
+	});
+
 	commandManager.RegisterCommand("ping", {}, 0, "Sends a ping to the server.", [&sock](const CommandArgs& args)
 	{
 		if (sock == nullptr)

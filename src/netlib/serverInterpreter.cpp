@@ -93,21 +93,37 @@ void ServerInterpreter::RegisterMessages()
     m_interpreter.RegisterMessage("JOIN", { "channel" },
         [this](const std::vector<std::string>& args)
         {
-            // auto channel = Utils::StringTrim(args[0]);
-            // auto nickname = m_client->nickname;
+            m_server -> m_clientsMutex.lock();
 
-            // if (m_server->m_channels.find(channel) == m_server->m_channels.end())
-            // {
-            //     m_server->m_channels[channel] = CreateRef<Channel>(Channel{ channel });
-            // }
+            auto channel = Utils::StringTrim(args[0]);
+            auto nickname = m_client->nickname;
 
-            // m_server->m_channels[channel]->users[nickname] = nickname;
-            // m_server->Broadcast(nickname + " has joined " + channel + ".", nullptr);
+            if (m_server->m_channels.find(channel) == m_server->m_channels.end())
+            {
+                m_server->m_channels[channel] = CreateRef<Channel>(Channel{ channel, false, { }, { } });
+                m_client -> isOperator = true;
+            }
 
-            // return RPL_CODES.at("RPL_TOPIC");
-            return "";
+            if (!m_server->m_channels[channel]->IsAuthorized(nickname))
+            {
+                m_server->m_clientsMutex.unlock();
+                return ERR_CODES.at("ERR_NOPRIVILEGES");
+            }
+
+            if (m_client -> channel != ""){
+                Ref<Channel> c = m_server->m_channels[m_client -> channel];
+                c -> RemoveUser(m_client -> nickname);
+            }
+            
+            m_server->m_channels[channel]->users.push_back(m_client);
+            m_server->m_clients[nickname]->channel = channel;
+            m_server->BroadcastChannel(nickname + " has joined " + channel + ".", channel);
+            
+            m_server->m_clientsMutex.unlock();
+            return RPL_CODES.at("RPL_WELCOME");
+            
         },
-        noValidator
+        noValidator // TODO: Channel name validator
     );
 }
 
@@ -127,7 +143,11 @@ void ServerInterpreter::Interpret(const std::string& msg)
         {
             // Sends a reply to the client
             m_server->m_clientsMutex.lock();
-            m_server->Broadcast(m_client->nickname + ": " + msg);
+            if (m_client -> channel != ""){
+                m_server->BroadcastChannel(m_client->nickname + ": " + msg, m_client->channel);
+            }else{
+                m_client -> sock.Send("Please join a channel to send messages.");
+            }
             m_server->m_clientsMutex.unlock();
         }
     );

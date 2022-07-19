@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "server.h"
 #include "connectedClient.h"
 
 class Channel {
@@ -13,9 +12,13 @@ public:
     
     bool isInviteOnly;
 
-    std::vector<ConnectedClient> users;
+    std::vector<Ref<ConnectedClient> > users;
 
     std::set<std::string> invites;
+
+    bool IsAuthorized(const std::string& nickname);
+
+    void RemoveUser(const std::string& nickname);
 };
 
 
