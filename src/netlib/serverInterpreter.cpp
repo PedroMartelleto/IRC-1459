@@ -125,6 +125,8 @@ void ServerInterpreter::RegisterMessages()
         },
         noValidator // TODO: Channel name validator
     );
+
+    
 }
 
 void ServerInterpreter::Interpret(const std::string& msg) 
@@ -143,8 +145,13 @@ void ServerInterpreter::Interpret(const std::string& msg)
         {
             // Sends a reply to the client
             m_server->m_clientsMutex.lock();
+
             if (m_client -> channel != ""){
-                m_server->BroadcastChannel(m_client->nickname + ": " + msg, m_client->channel);
+                if (!m_client -> isMuted){
+                    m_server->BroadcastChannel(m_client->nickname + ": " + msg, m_client->channel);
+                }else{
+                    m_client -> sock.Send("You are not authorized to send messages in this channel.");
+                }
             }else{
                 m_client -> sock.Send("Please join a channel to send messages.");
             }
