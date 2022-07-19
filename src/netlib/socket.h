@@ -27,6 +27,9 @@ public:
 	void Send(const std::string& msg);
 	std::string Receive();
 
+	// Gets the IP address of the enpoint of this socket
+	std::string GetIP();
+
 	// Functions used for closing the connection
 	// Optionally stops only sending or receiving
 	void Close();

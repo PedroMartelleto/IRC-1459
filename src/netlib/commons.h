@@ -17,6 +17,7 @@
 #include <functional>
 #include <cstring>
 #include <memory>
+#include <arpa/inet.h>
 
 #include "msg/replies.h"
 #include "msg/errors.h"

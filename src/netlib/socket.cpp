@@ -222,6 +222,13 @@ std::string Socket::Receive()
 	return stream.str();
 }
 
+std::string Socket::GetIP(){
+	struct sockaddr_in addr;
+	socklen_t len = sizeof(addr);
+	getpeername(m_socketFile, (struct sockaddr*)&addr, &len);
+	return inet_ntoa(addr.sin_addr);
+}
+
 // Closes the connection
 void Socket::Close()
 {

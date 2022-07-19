@@ -236,10 +236,13 @@ void ServerInterpreter::RegisterMessages()
     m_interpreter.RegisterMessage("WHOIS", { "nickname" },
         [this](const std::vector<std::string>& args)
         {
-            auto nick = args[0];
-            auto channel = args[1];
-            // TODO: This
-            return RPL_CODES.at("RPL_WELCOME");
+            auto nickname = Utils::StringTrim(args[0]);
+            auto target = m_server->m_clients[nickname];
+            
+            std::string ip = target->sock.GetIP();
+            
+            return ip;
+            
         },
         sameChannelAdminValidator
     );
@@ -307,7 +310,7 @@ void ServerInterpreter::RegisterMessages()
             if (m_server->m_clients[nick]->channel != channel)
             {
                 m_server->m_channels[channel]->invites.insert(nick);
-                m_server->SendToClient(nick, "You have been invited to " + channel + " by " + m_client->nickname + ".");
+                m_server->SendToClient("You have been invited to " + channel + " by " + m_client->nickname + ".", nick);
                 return RPL_CODES.at("RPL_INVITING");
             }
             else
