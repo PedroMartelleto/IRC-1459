@@ -23,6 +23,7 @@ static const std::map<std::string, std::string> ERR_CODES =
     {"ERR_ALREADYREGISTRED", "462"},
     {"ERR_PASSWDMISMATCH", "464"},
     {"ERR_UNKNOWNMODE", "472"},
+    {"ERR_INVITEONLYCHAN", "473"},
     {"ERR_NOPRIVILEGES", "481"},
     {"ERR_CHANOPRIVSNEEDED", "482"},
     {"ERR_NOOPERPRIVILEGES", "491"},

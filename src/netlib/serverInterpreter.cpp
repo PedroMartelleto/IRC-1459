@@ -90,6 +90,22 @@ void ServerInterpreter::RegisterMessages()
         return RPL_CODES.at("PIPE_VALID");
     };
 
+    IRCMessageValidator channelNameIsValidArg1 = [this](const IRCMessageArgs& args)
+    {
+        auto channel = args[0];
+        
+        if (!Server::IsValidChannelName(channel))
+        {
+            return ERR_CODES.at("ERR_NOSUCHCHANNEL");
+        }
+
+        return RPL_CODES.at("PIPE_VALID");
+    };
+
+    const auto sourceAdminAndTargetExistsValidator = Pipe(sourceClientIsAdmin, targetUserExistsValidator);
+    
+    const auto sameChannelAdminValidator = Pipe(sourceAdminAndTargetExistsValidator, targetUserIsInTheSameChannel);
+
     IRCMessageValidator noValidator = [](const IRCMessageArgs& args)
     {
         return RPL_CODES.at("PIPE_VALID");
@@ -144,25 +160,51 @@ void ServerInterpreter::RegisterMessages()
     m_interpreter.RegisterMessage("JOIN", { "channel" },
         [this](const std::vector<std::string>& args)
         {
-            // auto channel = Utils::StringTrim(args[0]);
-            // auto nickname = m_client->nickname;
+            m_server->m_clientsMutex.lock();
 
-            // if (m_server->m_channels.find(channel) == m_server->m_channels.end())
-            // {
-            //     m_server->m_channels[channel] = CreateRef<Channel>(Channel{ channel });
-            // }
+            auto channel = Utils::StringTrim(args[0]);
+            auto nickname = m_client->nickname;
 
-            // m_server->m_channels[channel]->users[nickname] = nickname;
-            // m_server->Broadcast(nickname + " has joined " + channel + ".", nullptr);
+            // If the channel doesn't exist, create it and set the client as operator.
+            if (m_server->m_channels.find(channel) == m_server->m_channels.end())
+            {
+                m_server->m_channels[channel] = CreateRef<Channel>(Channel{ channel, false, { }, { } });
+                m_client->isOperator = true;
+            }
 
-            // return RPL_CODES.at("RPL_TOPIC");
-            return "";
+            // Checks if the client is already in the channel.
+            auto& currentUsers = m_server->m_channels[channel]->nicknames;
+
+            if (std::find(currentUsers.begin(), currentUsers.end(), nickname) == currentUsers.end())
+            {
+                return ERR_CODES.at("RPL_NOTOPIC");
+            }
+
+            // Checks if the client is authorized to enter the channel.
+            if (!m_server->m_channels[channel]->IsAuthorized(nickname))
+            {
+                m_server->m_clientsMutex.unlock();
+                return ERR_CODES.at("ERR_INVITEONLYCHAN");
+            }
+
+            // Removes the client from their previous channel.
+            if (m_client->channel != "")
+            {
+                Ref<Channel> oldChannel = m_server->m_channels[m_client->channel];
+                oldChannel->RemoveUser(m_client->nickname);
+            }
+            
+            // Finally, adds the client to the new channel.
+            m_server->m_channels[channel]->nicknames.push_back(m_client->nickname);
+            m_server->m_clients[nickname]->channel = channel;
+            m_server->BroadcastChannel(nickname + " has joined " + channel + ".", channel);
+            
+            m_server->m_clientsMutex.unlock();
+            return RPL_CODES.at("RPL_NOTOPIC");
+            
         },
-        noValidator
+        channelNameIsValidArg1
     );
-
-    const auto sourceAdminAndTargetExistsValidator = Pipe(sourceClientIsAdmin, targetUserExistsValidator);
-    const auto sameChannelAdminValidator = Pipe(sourceAdminAndTargetExistsValidator, targetUserIsInTheSameChannel);
 
     m_interpreter.RegisterMessage("WHOIS", { "nickname" },
         [this](const std::vector<std::string>& args)
@@ -252,7 +294,16 @@ void ServerInterpreter::Interpret(const std::string& msg)
         {
             // Sends a reply to the client
             m_server->m_clientsMutex.lock();
-            m_server->Broadcast(m_client->nickname + ": " + msg);
+
+            if (m_client -> channel != ""){
+                if (!m_client -> isMuted){
+                    m_server->BroadcastChannel(m_client->nickname + ": " + msg, m_client->channel);
+                }else{
+                    m_client -> sock.Send("You are not authorized to send messages in this channel.");
+                }
+            }else{
+                m_client -> sock.Send("Please join a channel to send messages.");
+            }
             m_server->m_clientsMutex.unlock();
         }
     );
