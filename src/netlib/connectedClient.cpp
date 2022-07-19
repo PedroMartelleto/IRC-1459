@@ -36,3 +36,8 @@ ConnectedClient& ConnectedClient::operator=(ConnectedClient& other)
     isOperator = other.isOperator;
     return *this;
 }
+
+bool ConnectedClient::IsInAnyChannel() const
+{
+    return !channel.empty();
+}

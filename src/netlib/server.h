@@ -45,9 +45,6 @@
 // TODO: Server
 //			- Channels
 
-// TODO: Admin clients
-//			- /kick, /mute, /unmute, /whois
-
 // TODO: Invites
 
 

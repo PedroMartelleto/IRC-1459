@@ -18,6 +18,8 @@ struct ConnectedClient
 	bool isMuted;
 	bool isOperator;
 
+	bool IsInAnyChannel() const;
+
 	bool operator==(const ConnectedClient& other) const;
 	ConnectedClient& operator=(const ConnectedClient& other);
 	ConnectedClient& operator=(ConnectedClient& other);

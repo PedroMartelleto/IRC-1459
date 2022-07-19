@@ -12,6 +12,11 @@ static const std::map<std::string, std::string> RPL_CODES =
     {"RPL_CREATED", "003"},
     {"RPL_MYINFO", "004"},
 
+    {"RPL_MUTED", "010"},
+    {"RPL_UNMUTED", "011"},
+    {"RPL_KICKED", "012"},
+    {"RPL_INVITED", "013"},
+
     {"RPL_TRACEUSER", "205"},
     {"RPL_TRACESERVER", "206"},
     {"RPL_ENDOFTRACE", "262"},

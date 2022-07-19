@@ -1,10 +1,25 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/pedro/Desktop/Projects/IRC-1459'
-mkdir -p build
-g++ -g -rdynamic -g -Wall -std=c++1z -pthread src/netlib/**/*.cpp src/netlib/*.cpp src/serverMain.cpp -o build/server.o
-mkdir -p build
-g++ -g -rdynamic -g -Wall -std=c++1z -pthread src/netlib/**/*.cpp src/netlib/*.cpp src/clientMain.cpp -o build/client.o
+mkdir -p build/	
+mkdir -p build/cmd/	
+mkdir -p build/msg/	
+mkdir -p build/threads/	
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/client.o src/netlib/client.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/connectedClient.o src/netlib/connectedClient.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/ircMessageInterpreter.o src/netlib/ircMessageInterpreter.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/server.o src/netlib/server.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/serverInterpreter.o src/netlib/serverInterpreter.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/socket.o src/netlib/socket.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/socketCmds.o src/netlib/socketCmds.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/utils.o src/netlib/utils.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/cmd/cmd.o src/netlib/cmd/cmd.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/cmd/cmdManager.o src/netlib/cmd/cmdManager.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/cmd/cmdParser.o src/netlib/cmd/cmdParser.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/cmd/defaultCmds.o src/netlib/cmd/defaultCmds.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/threads/logger.o src/netlib/threads/logger.cpp
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/serverMain.o src/serverMain.cpp
+g++  build/client.o  build/connectedClient.o  build/ircMessageInterpreter.o  build/server.o  build/serverInterpreter.o  build/socket.o  build/socketCmds.o  build/utils.o  build/cmd/cmd.o  build/cmd/cmdManager.o  build/cmd/cmdParser.o  build/cmd/defaultCmds.o  build/threads/logger.o build/serverMain.o -o build/server -g -Wall -std=c++1z -pthread -rdynamic
+g++ -c -g -Wall -std=c++1z -pthread -rdynamic -o build/clientMain.o src/clientMain.cpp
+g++  build/client.o  build/connectedClient.o  build/ircMessageInterpreter.o  build/server.o  build/serverInterpreter.o  build/socket.o  build/socketCmds.o  build/utils.o  build/cmd/cmd.o  build/cmd/cmdManager.o  build/cmd/cmdParser.o  build/cmd/defaultCmds.o  build/threads/logger.o build/clientMain.o -o build/client -g -Wall -std=c++1z -pthread -rdynamic
 make: Leaving directory '/home/pedro/Desktop/Projects/IRC-1459'
  
-makefile:36: warning: ignoring prerequisites on suffix rule definition
-

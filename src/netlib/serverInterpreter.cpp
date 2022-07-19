@@ -1,5 +1,22 @@
 #include "serverInterpreter.h"
 
+IRCMessageValidator Pipe(const IRCMessageValidator& a, const IRCMessageValidator& b)
+{
+    return [a, b](const IRCMessageArgs& args)
+    {
+        auto resultA = a(args);
+        
+        if (resultA != RPL_CODES.at("PIPE_VALID"))
+        {
+            return resultA;
+        }
+        else
+        {
+            return b(args);
+        }
+    };
+};
+
 ServerInterpreter::ServerInterpreter(Server* server, const Ref<ConnectedClient>& client)
 {
     m_server = server;
@@ -34,6 +51,40 @@ void ServerInterpreter::RegisterMessages()
         if (m_server->IsNicknameUnique(nickname))
         {
             return ERR_CODES.at("ERR_NOSUCHNICK");
+        }
+
+        return RPL_CODES.at("PIPE_VALID");
+    };
+
+    IRCMessageValidator sourceClientIsAdmin = [this](const IRCMessageArgs&)
+    {
+        if (!m_client->isOperator)
+        {
+            return ERR_CODES.at("ERR_NOPRIVILEGES");
+        }
+
+        return RPL_CODES.at("PIPE_VALID");
+    };
+
+    IRCMessageValidator targetUserIsInTheSameChannel = [this](const IRCMessageArgs& args)
+    {
+        auto nickname = args[0];
+        const auto& client = m_server->m_clients.at(nickname);
+
+        if (!client->IsInAnyChannel() || client->channel != m_client->channel)
+        {
+            return ERR_CODES.at("ERR_USERNOTINCHANNEL");
+        }
+
+        return RPL_CODES.at("PIPE_VALID");
+    };
+
+    IRCMessageValidator channelArg2Exists = [this](const IRCMessageArgs& args)
+    {
+        auto channel = args[1];
+        if (m_server->m_channels.find(channel) == m_server->m_channels.end())
+        {
+            return ERR_CODES.at("ERR_NOSUCHCHANNEL");
         }
 
         return RPL_CODES.at("PIPE_VALID");
@@ -108,6 +159,80 @@ void ServerInterpreter::RegisterMessages()
             return "";
         },
         noValidator
+    );
+
+    const auto sourceAdminAndTargetExistsValidator = Pipe(sourceClientIsAdmin, targetUserExistsValidator);
+    const auto sameChannelAdminValidator = Pipe(sourceAdminAndTargetExistsValidator, targetUserIsInTheSameChannel);
+
+    m_interpreter.RegisterMessage("WHOIS", { "nickname" },
+        [this](const std::vector<std::string>& args)
+        {
+            auto nick = args[0];
+            auto channel = args[1];
+            // TODO: This
+            return RPL_CODES.at("RPL_WELCOME");
+        },
+        sameChannelAdminValidator
+    );
+
+    m_interpreter.RegisterMessage("MUTE", { "nickname" },
+        [this](const std::vector<std::string>& args)
+        {
+            m_server->m_clients[args[0]]->isMuted = true;
+            return RPL_CODES.at("RPL_MUTED");
+        },
+        sameChannelAdminValidator
+    );
+
+    m_interpreter.RegisterMessage("UNMUTE", { "nickname" },
+        [this](const std::vector<std::string>& args)
+        {
+            m_server->m_clients[args[0]]->isMuted = false;
+            return RPL_CODES.at("RPL_UNMUTED");
+        },
+        sameChannelAdminValidator
+    );
+
+    m_interpreter.RegisterMessage("KICK", { "nickname" },
+        [this](const std::vector<std::string>& args)
+        {
+            auto nick = args[0];
+            auto client = m_server->m_clients[nick];
+
+            auto& channel = m_server->m_channels[m_client->channel];
+
+            // Removes the user from the channel
+            auto pos = std::find(channel->nicknames.begin(), channel->nicknames.end(), nick);
+            channel->nicknames.erase(pos);
+
+            // Sets the user's channel to an empty string
+            m_server->m_clients[nick]->channel = "";
+
+            return RPL_CODES.at("RPL_KICKED");
+        },
+        sameChannelAdminValidator
+    );
+
+    m_interpreter.RegisterMessage("INVITE", { "nickname" },
+        [this](const std::vector<std::string>& args)
+        {
+            auto nick = args[0];
+            auto channel = args[1];
+            
+            if (m_server->m_clients[nick]->channel != channel)
+            {
+                m_server->m_channels[channel]->nicknames.push_back(nick);
+            }
+            else
+            {
+                return ERR_CODES.at("ERR_ALREADYINCHANNEL");
+            }
+
+            m_server->m_clients[nick]->channel = channel;
+
+            return RPL_CODES.at("RPL_INVITED");
+        },
+        Pipe(sourceAdminAndTargetExistsValidator, channelArg2Exists)
     );
 }
 

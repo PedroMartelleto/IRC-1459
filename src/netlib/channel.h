@@ -13,8 +13,7 @@ public:
     
     bool isInviteOnly;
 
-    std::vector<ConnectedClient> users;
-
+    std::vector<std::string> nicknames;
     std::set<std::string> invites;
 };
 
