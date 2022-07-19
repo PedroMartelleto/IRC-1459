@@ -84,7 +84,7 @@ Socket Socket::Accept()
 }
 
 // Connects to the specified address
-void Socket::Connect()
+int Socket::Connect()
 {
 	// Tries to connect to each address in the addr linked list until one succeeds
 	int result;
@@ -101,10 +101,7 @@ void Socket::Connect()
 		m_address = m_address->ai_next;
 	}
 
-	if (result != 0)
-	{
-		error("connect");
-	}
+	return result;
 }
 
 void Socket::SendFragment(const char* fragment, int fragmentSize)

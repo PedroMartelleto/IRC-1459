@@ -41,7 +41,12 @@ int main()
 		}
 
 		sock = CreateRef<Socket>(server.c_str(), port.c_str());
-		sock->Connect();
+		if (sock->Connect() != 0)
+		{
+			Logger::Print("Failed to connect to server.\n");
+			sock = nullptr;
+			return CommandResult::ERR;
+		}
 
 		Logger::Print("Enter your nickname: ");
 

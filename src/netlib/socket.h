@@ -21,7 +21,7 @@ public:
 	Socket Accept(); // Accepts an incoming connection
 
 	// Functions used for communication with a server
-	void Connect(); // Connects to the specified address
+	int Connect(); // Connects to the specified address
 
 	// Functions used for sending and receiving data
 	void Send(const std::string& msg);
