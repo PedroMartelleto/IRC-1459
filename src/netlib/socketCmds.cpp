@@ -7,7 +7,7 @@ namespace SocketCmds {
     {
         for (const auto& spec : specs)
         {
-            manager->RegisterCommand(spec.name, spec.args, spec.args.size(), spec.description, [spec, &socket](const CommandArgs& args) 
+            manager->RegisterCommand(spec.name, spec.args, spec.args.size(), spec.description, [spec, socket](const CommandArgs& args) 
             {
                 if (socket == nullptr)
                 {

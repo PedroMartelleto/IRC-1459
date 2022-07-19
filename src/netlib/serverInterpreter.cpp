@@ -199,9 +199,10 @@ void ServerInterpreter::RegisterMessages()
             // Checks if the client is already in the channel.
             auto& currentUsers = m_server->m_channels[channel]->nicknames;
 
-            if (std::find(currentUsers.begin(), currentUsers.end(), nickname) == currentUsers.end())
+            if (std::find(currentUsers.begin(), currentUsers.end(), nickname) != currentUsers.end())
             {
-                return ERR_CODES.at("RPL_NOTOPIC");
+                m_server->m_clientsMutex.unlock();
+                return ERR_CODES.at("ERR_USERONCHANNEL");
             }
 
             // Checks if the client is authorized to enter the channel.
@@ -226,7 +227,7 @@ void ServerInterpreter::RegisterMessages()
             m_server->BroadcastChannel(nickname + " has joined " + channel + ".", channel);
             
             m_server->m_clientsMutex.unlock();
-            return RPL_CODES.at("RPL_NOTOPIC");
+            return RPL_CODES.at("RPL_WELCOME");
             
         },
         channelNameIsValidArg1

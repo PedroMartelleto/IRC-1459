@@ -45,7 +45,7 @@ bool Server::IsValidChannelName(const std::string& channel)
 
     for (char c : channel)
     {
-        if (std::find(forbiddenChannelCharacters.begin(), forbiddenChannelCharacters.end(), c) != forbiddenNicknameCharacters.end())
+        if (std::find(forbiddenChannelCharacters.begin(), forbiddenChannelCharacters.end(), c) != forbiddenChannelCharacters.end())
         {
             return false;
         }
