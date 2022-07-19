@@ -24,7 +24,8 @@ void CommandSpecs::PrintUsage() const
 
 void CommandSpecs::PrintNameAndDescription() const
 {
-    std::cout << name << " " << description << std::endl;
+    std::cout << "  /" << name << std::endl;
+    std::cout << "\t- " << description << std::endl;
 }
 
 void CommandSpecs::PrintAllInfo() const
