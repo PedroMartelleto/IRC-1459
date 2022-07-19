@@ -112,11 +112,11 @@ void Server::BroadcastChannel(const std::string& msg, const std::string& channel
 
     Logger::Print("%s\n", msg.c_str());
 
-    Ref<Channel> c = m_channels[channel];
+    Ref<Channel> targetChannel = m_channels[channel];
     
-    for (auto& user : c->users)
+    for (auto& nick : targetChannel->nicknames)
     {
-        m_clients.at(user -> nickname) -> sock.Send(msg);
+        m_clients.at(nick)->sock.Send(msg);
     }
 }
 
