@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jul 18 10:13:27 2022
+# Make data base, printed on Tue Jul 19 20:21:51 2022
 
 # Variables
 
@@ -59,7 +59,7 @@ VSCODE_CODE_CACHE_PATH = /home/pedro/.config/Code/CachedData/b06ae3b2d2dbfe28bca
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.C1DHP1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.CFVTP1
 # default
 .LOADED := 
 # default
@@ -95,7 +95,9 @@ SNAP_REEXEC =
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 2793
+VSCODE_PID = 3882
+# makefile (from 'makefile', line 18)
+sources = $(foreach d, $(srcdirs), $(wildcard $(d)*.cpp))
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -103,7 +105,7 @@ XDG_SESSION_TYPE = wayland
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-SESSION_MANAGER = local/pedro-H310M-M-2-2-0:@/tmp/.ICE-unix/1947,unix/pedro-H310M-M-2-2-0:/tmp/.ICE-unix/1947
+SESSION_MANAGER = local/pedro-H310M-M-2-2-0:@/tmp/.ICE-unix/1916,unix/pedro-H310M-M-2-2-0:/tmp/.ICE-unix/1916
 # automatic
 *F = $(notdir $*)
 # environment
@@ -124,8 +126,8 @@ SHELL = /bin/sh
 MAKECMDGOALS := all
 # environment
 XMODIFIERS = @im=ibus
-# makefile (from 'makefile', line 12)
-objects = src/netlib/**/*.cpp src/netlib/*.cpp
+# makefile (from 'makefile', line 19)
+objects = $(patsubst src/netlib/%.cpp, build/%.o, $(sources))
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
@@ -153,9 +155,11 @@ LC_TIME = pt_BR.UTF-8
 # environment
 SNAP = /snap/code/101
 # environment
-INVOCATION_ID = bd1e3edfcd8e4bac888a2c70ee3ddd31
+INVOCATION_ID = 1a59d7890ac945699ba7dceae0701b17
 # environment
 SNAP_REVISION = 101
+# makefile (from 'makefile', line 16)
+objdirs = $(patsubst src/netlib/%, build/%, $(wildcard $(srcdirs)))
 # environment
 SNAP_REAL_HOME = /home/pedro
 # environment
@@ -189,7 +193,7 @@ SNAP_ARCH = amd64
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 1984
+SYSTEMD_EXEC_PID = 1957
 # environment
 DISPLAY = :0
 # environment
@@ -205,11 +209,11 @@ SNAP_DATA = /var/snap/code/101
 # environment
 SNAP_CONTEXT = WhP697j5YOiESJV8N5Ldqt3e_02whfQHEYsuxkzngNF2OCEDV_aq
 # environment
-MANAGERPID = 1755
+MANAGERPID = 1724
 # environment
 LC_MEASUREMENT = pt_BR.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2608
+GIO_LAUNCHED_DESKTOP_FILE_PID = 3838
 # environment
 _ = /snap/code/101/usr/share/code/code
 # environment
@@ -221,7 +225,7 @@ GDK_PIXBUF_MODULE_FILE = /home/pedro/snap/code/common/.cache/gdk-pixbuf-loaders.
 # environment
 LC_CTYPE = pt_BR.UTF-8
 # environment
-JOURNAL_STREAM = 8:30258
+JOURNAL_STREAM = 8:30194
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -252,6 +256,8 @@ SUFFIXES :=
 VSCODE_CLI = 1
 # environment
 ELECTRON_NO_ATTACH_CONSOLE = 1
+# makefile (from 'makefile', line 15)
+srcdirs = src/netlib/ src/netlib/**/
 # environment
 SNAP_COMMON = /var/snap/code/common
 # default
@@ -260,8 +266,8 @@ SNAP_COMMON = /var/snap/code/common
 SNAP_USER_DATA = /home/pedro/snap/code/101
 # environment
 XDG_MENU_PREFIX = gnome-
-# makefile (from 'makefile', line 13)
-flags = -g -Wall -std=c++1z -pthread
+# makefile (from 'makefile', line 12)
+flags = -g -Wall -std=c++1z -pthread -rdynamic
 # environment
 GDMSESSION = ubuntu
 # environment
@@ -269,7 +275,7 @@ LC_IDENTIFICATION = pt_BR.UTF-8
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # variable set hash-table stats:
-# Load=129/1024=13%, Rehash=0, Collisions=4/165=2%
+# Load=132/1024=13%, Rehash=0, Collisions=7/178=4%
 
 # Pattern-specific Variable Values
 
@@ -277,82 +283,229 @@ SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd
 
 # Directories
 
+# src/netlib (device 2082, inode 3278548): 32 files, no impossibilities.
+# src/netlib/threads (device 2082, inode 3279120): 5 files, no impossibilities.
+# src/netlib/msg (device 2082, inode 3279040): 4 files, no impossibilities.
 # . (device 2082, inode 3277511): 10 files, no impossibilities.
+ 
+# src/netlib/cmd (device 2082, inode 3278551): 14 files, no impossibilities.
 
-# 10 files, no impossibilities in 1 directories.
+# 65 files, no impossibilities in 5 directories.
 
 # Implicit Rules
 
-# No implicit rules.
+build/%.o: src/netlib/%.cpp
+#  recipe to execute (from 'makefile', line 30):
+	g++ -c $(flags) -o $@ $<
 
+# 1 implicit rules, 0 (0.0%) terminal.
 # Files
 
-# Not a target:
-.cpp:
+build/msg/:
 #  Implicit rule search has not been done.
-#  Modification time never checked.
- 
-#  File has not been updated.
+#  Last modified 2022-07-18 13:25:48.89620988
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'makefile', line 39):
+	mkdir -p $@	
 
 FORCE:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-client:
+gc: client
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 22):
-	mkdir -p build
-	g++ -g -rdynamic $(flags) $(objects) src/clientMain.cpp -o build/client.o
+#  recipe to execute (from 'makefile', line 51):
+	gdb ./build/client -tui
+
+client: build/ build/cmd/ build/msg/ build/threads/ build/channel.o build/client.o build/connectedClient.o build/ircMessageInterpreter.o build/server.o build/serverInterpreter.o build/socket.o build/socketCmds.o build/utils.o build/cmd/cmd.o build/cmd/cmdManager.o build/cmd/cmdParser.o build/cmd/defaultCmds.o build/threads/logger.o build/clientMain.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 27):
+	g++ $(objects) build/clientMain.o -o build/client $(flags)
+
+build/clientMain.o: src/clientMain.cpp
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 36):
+	g++ -c $(flags) -o $@ $<
+
+build/client.o: src/netlib/client.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'client'
+#  Last modified 2022-07-19 11:43:33.165982056
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'makefile', line 30):
+	g++ -c $(flags) -o $@ $<
+
+# Not a target:
+build/cmd/cmd.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build/threads/logger.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/netlib/ircMessageInterpreter.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-14 19:44:11.356834921
+#  File has been updated.
+#  Successfully updated.
+
+build/connectedClient.o: src/netlib/connectedClient.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'connectedClient'
+#  Last modified 2022-07-19 11:43:34.106013467
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'makefile', line 30):
+	g++ -c $(flags) -o $@ $<
+
+# Not a target:
+src/clientMain.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/serverMain.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+build/serverMain.o: src/serverMain.cpp
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 33):
+	g++ -c $(flags) -o $@ $<
+
+# Not a target:
+build/cmd/defaultCmds.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 39):
+#  recipe to execute (from 'makefile', line 54):
 	rm -f ./build/*.o
 	rm -fr zip 
 	rm -f *.zip
 
-.cpp.o: .cpp
+# Not a target:
+src/netlib/client.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-18 15:46:53.542656629
+#  File has been updated.
+#  Successfully updated.
+
+build/cmd/:
+#  Implicit rule search has not been done.
+#  Last modified 2022-07-18 13:41:29.324015708
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'makefile', line 39):
+	mkdir -p $@	
+
+# Not a target:
+build/cmd/cmdManager.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 36):
-	g++ -g -rdynamic $*.cpp -c $(flags)
 
-server:
+server: build/ build/cmd/ build/msg/ build/threads/ build/channel.o build/client.o build/connectedClient.o build/ircMessageInterpreter.o build/server.o build/serverInterpreter.o build/socket.o build/socketCmds.o build/utils.o build/cmd/cmd.o build/cmd/cmdManager.o build/cmd/cmdParser.o build/cmd/defaultCmds.o build/threads/logger.o build/serverMain.o
 #  Implicit rule search has not been done.
-#  Implicit/static pattern stem: ''
 #  File does not exist.
 #  File has been updated.
 #  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/4=0%
+#  recipe to execute (from 'makefile', line 24):
+	g++ $(objects) build/serverMain.o -o build/server $(flags)
+
+build/server.o: src/netlib/server.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'server'
+#  Last modified 2022-07-19 11:48:52.543713381
+#  File has been updated.
+#  Needs to be updated (-q is set).
 # automatic
-# @ := server
+# @ := build/server.o
 # automatic
-# * := 
+# * := server
 # automatic
-# < := 
+# < := src/netlib/server.cpp
 # automatic
-# + := 
+# + := src/netlib/server.cpp
 # automatic
 # % := 
 # automatic
-# ^ := 
+# ^ := src/netlib/server.cpp
 # automatic
-# ? := 
+# ? := src/netlib/server.cpp
 # automatic
 # | := 
 # variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=1/13=8%
-#  recipe to execute (from 'makefile', line 18):
-	mkdir -p build
-	g++ -g -rdynamic $(flags) $(objects) src/serverMain.cpp -o build/server.o
+# Load=8/32=25%, Rehash=0, Collisions=1/14=7%
+#  recipe to execute (from 'makefile', line 30):
+	g++ -c $(flags) -o $@ $<
+
+gs: server
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 48):
+	gdb ./build/server -tui
+
+# Not a target:
+build/serverInterpreter.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+build/threads/:
+#  Implicit rule search has not been done.
+#  Last modified 2022-07-18 13:25:55.668374157
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'makefile', line 39):
+	mkdir -p $@	
+
+# Not a target:
+build/utils.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/netlib/server.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-19 13:20:07.597997127
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
 .DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build/socketCmds.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -364,22 +517,26 @@ all: server client
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+# Load=0/32=0%, Rehash=0, Collisions=0/4=0%
 
-rs:
+rs: server
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 26):
-	mkdir -p build
-	g++ -g -rdynamic $(flags) $(objects) src/serverMain.cpp -o build/server.o
-	gdb -ex run ./build/server.o
+#  recipe to execute (from 'makefile', line 42):
+	./build/server
+
+# Not a target:
+build/cmd/cmdParser.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 zip: FORCE
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 46):
+#  recipe to execute (from 'makefile', line 61):
 	rm code.zip -f
 	mkdir zip -p
 	rm zip/* -f
@@ -389,50 +546,89 @@ zip: FORCE
 	cd zip; zip -r code.zip *
 	mv zip/code.zip .
 
+build/:
+#  Implicit rule search has not been done.
+#  Last modified 2022-07-19 11:49:09.156177994
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'makefile', line 39):
+	mkdir -p $@	
+
 rebuild:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 56):
+#  recipe to execute (from 'makefile', line 71):
 	make clean
 	make all
 
 # Not a target:
-makefile:
+src/netlib/channel.cpp:
+ 
 #  Implicit rule search has been done.
-#  Last modified 2022-07-12 20:29:18.127640536
+#  Last modified 2022-07-19 11:43:18.761498199
 #  File has been updated.
 #  Successfully updated.
 
 # Not a target:
-.SUFFIXES:
+makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-18 14:35:44.799425908
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+build/socket.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-rc:
+# Not a target:
+src/netlib/connectedClient.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-18 17:33:53.328738621
+#  File has been updated.
+#  Successfully updated.
+
+build/channel.o: src/netlib/channel.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'channel'
+#  Last modified 2022-07-19 11:43:32.345954635
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'makefile', line 30):
+	g++ -c $(flags) -o $@ $<
+
+build/ircMessageInterpreter.o: src/netlib/ircMessageInterpreter.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'ircMessageInterpreter'
+#  Last modified 2022-07-18 13:27:10.84219673
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'makefile', line 30):
+	g++ -c $(flags) -o $@ $<
+
+rc: client
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 31):
-	mkdir -p build
-	g++ -g -rdynamic $(flags) $(objects) src/clientMain.cpp -o build/client.o
-	gdb -ex run ./build/client.o
+#  recipe to execute (from 'makefile', line 45):
+	./build/client
 
 # files hash-table stats:
-# Load=14/1024=1%, Rehash=0, Collisions=0/32=0%
+# Load=41/1024=4%, Rehash=0, Collisions=6/122=5%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 25 / storage = 179 B / avg = 7 B
-# current buf: size = 8162 B / used = 179 B / count = 25 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 108 / storage = 1419 B / avg = 13 B
+# current buf: size = 8162 B / used = 1419 B / count = 108 / avg = 13 B
 
-# strcache performance: lookups = 44 / hit rate = 43%
+# strcache performance: lookups = 176 / hit rate = 38%
 # hash-table stats:
-# Load=25/8192=0%, Rehash=0, Collisions=0/44=0%
-# Finished Make data base on Mon Jul 18 10:13:27 2022
+# Load=108/8192=1%, Rehash=0, Collisions=0/176=0%
+# Finished Make data base on Tue Jul 19 20:21:51 2022
 
  
