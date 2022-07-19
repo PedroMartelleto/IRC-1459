@@ -39,6 +39,8 @@ public:
 
 	Socket& operator=(Socket& other);
 
+	bool IsValidSocket() const;
+
 private:
 	// Private constructor used when manually creating a socket
 	Socket() {}
@@ -57,10 +59,10 @@ private:
 	char* ReceiveFragment();
 
 	// Socket file descriptor
-	int m_socketFile;
+	int m_socketFile = 0;
 
 	// Address info for the socket
-	struct addrinfo *m_address;
+	struct addrinfo *m_address = nullptr;
 };
 
 // Exception thrown when the connection is closed after calling Receive()

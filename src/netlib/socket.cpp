@@ -6,7 +6,6 @@
 void error(const char *msg)
 {
 	perror(msg);
-	throw msg;
 }
 
 Socket::Socket(const char *address, const char *service)
@@ -28,9 +27,16 @@ Socket::Socket(const char *address, const char *service)
 	{
 		error("getaddrinfo");
 	}
+	else
+	{
+		// Creates the socket
+		m_socketFile = socket(m_address->ai_family, m_address->ai_socktype, m_address->ai_protocol);
+	}
+}
 
-	// Creates the socket
-	m_socketFile = socket(m_address->ai_family, m_address->ai_socktype, m_address->ai_protocol);
+bool Socket::IsValidSocket() const
+{
+	return m_socketFile != 0 && m_address != nullptr;
 }
 
 void Socket::Bind()

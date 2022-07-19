@@ -41,7 +41,7 @@ int main()
 		}
 
 		sock = CreateRef<Socket>(server.c_str(), port.c_str());
-		if (sock->Connect() != 0)
+		if (!sock->IsValidSocket() || sock->Connect() != 0)
 		{
 			Logger::Print("Failed to connect to server.\n");
 			sock = nullptr;
