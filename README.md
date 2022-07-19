@@ -39,3 +39,45 @@ Sends the requested message. Note that the message may contain spaces.
 > /quit
 
 Exits the program.
+
+> /nick [nickname]
+
+Updates the user's nickname.
+
+>  /join [channel]
+
+Joins a channel.
+
+> /ping
+
+Pings the current server.
+
+> /invite [nickname] [channel]
+
+Invites a new user to a channel. If the channel does not exist, creates one.
+
+> /join [channel]
+
+Joins a channel. If the channel does not exist, creates one.
+
+### Operator commands
+
+> /mode [modes]
+
+Updates the mode of the current channel.
+
+> /kick [nickname]
+
+Kicks a user from the channel.
+
+> /mute [nickname]
+
+Mutes a user in a channel.
+
+> /unmute [nickname]
+
+Unmutes a user in a channel.
+
+> /whois [nickname]
+
+Requests information about a user.
