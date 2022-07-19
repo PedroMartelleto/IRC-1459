@@ -1,5 +1,12 @@
 #include "client.h"
 
+void Client::Reset()
+{
+    m_replyCallbacksMutex.unlock();
+    m_replyCallbacks.clear();
+    m_hasNickname = false;
+}
+
 void Client::InterpretMessage(const std::string& msg)
 {
     const auto trimmedMsg = Utils::StringTrim(msg);

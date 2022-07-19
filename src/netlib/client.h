@@ -15,11 +15,15 @@
  */
 class Client {
 public:
+	Client() {}
+
 	void RegisterReplyCallback(const std::function<void(int)>& callback);
 	void InterpretMessage(const std::string& message);
 
 	bool HasNickname() const;
 	void SetHasNickname(bool hasNickname);
+
+	void Reset();
 private:
 	std::mutex m_replyCallbacksMutex;
 	std::vector<std::function<void(int)>> m_replyCallbacks;

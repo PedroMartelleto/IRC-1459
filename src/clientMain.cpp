@@ -65,8 +65,7 @@ int main()
 			SocketCommandSpec { "kick", { "nickname" }, "Kicks a user from the channel." },
 			SocketCommandSpec { "mute", { "nickname" }, "Mutes a user in a channel." },
 			SocketCommandSpec { "unmute", { "nickname" }, "Unmutes a user in a channel." },
-			SocketCommandSpec { "whois", { "nickname" }, "Requests information about a user." },
-
+			SocketCommandSpec { "whois", { "nickname" }, "Requests information about a user." }
 		});
 
 		listener = CreateRef<std::thread>([&sock, &client, server, port]()
@@ -81,6 +80,8 @@ int main()
 				catch (const ConnectionClosedException& e)
 				{
 					Logger::Print("Connection with server %s:%s closed.\n", server.c_str(), port.c_str());
+					sock = nullptr;
+					client.Reset();
 					break;
 				}
 			}
