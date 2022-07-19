@@ -15,7 +15,7 @@ public:
     std::vector<std::string> nicknames;
     std::set<std::string> invites;
 
-    bool IsAuthorized(const std::string& nickname);
+    bool IsAuthorizedToEnter(const std::string& nickname);
 
     void RemoveUser(const std::string& nickname);
 };

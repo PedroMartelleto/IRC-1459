@@ -1,5 +1,7 @@
 #include "./netlib/netlib.h"
 
+// TODO: Mute functionality
+
 int main()
 {
 	Logger::Print("Initializing client...\n");
@@ -45,7 +47,19 @@ int main()
 
 		// Registers simple socket commands that are easily converted to the IRC protocol and sent over the socket.
 		SocketCmds::RegisterSocketCommands(&commandManager, sock.get(), {
-			SocketCommandSpec { "nick", { "nickname" }, "Updates the user's nickname." }
+			SocketCommandSpec { "nick", { "nickname" }, "Updates the user's nickname." },
+			SocketCommandSpec { "join", { "channel" }, "Joins a channel." },
+			SocketCommandSpec { "ping", {  }, "Pings the current server." },
+			
+			SocketCommandSpec { "invite", { "nickname", "channel" }, "Invites a new user to a channel. If the channel does not exist, creates one." },
+
+			SocketCommandSpec { "join", { "channel" }, "Joins a channel. If the channel does not exist, creates one." },
+
+			// Operator commands
+			SocketCommandSpec { "mode", { "modes" }, "Updates the mode of the current channel." },
+			SocketCommandSpec { "kick", { "nickname" }, "Kicks a user from the channel." },
+			SocketCommandSpec { "mute", { "nickname" }, "Mutes a user in a channel." },
+			SocketCommandSpec { "unmute", { "nickname" }, "Unmutes a user in a channel." }
 		});
 
 		listener = CreateRef<std::thread>([&sock, &client, server, port]()
@@ -65,31 +79,6 @@ int main()
 			}
 		});
 
-		return CommandResult::SUCCESS;
-	});
-
-	commandManager.RegisterCommand("join", { "channel" }, 1, "Joins a channel.", [&sock](const CommandArgs& args)
-	{
-		if (sock == nullptr)
-		{
-			Logger::Print("You are not connected to a server.\n");
-			return CommandResult::ERR;
-		}
-		
-		sock -> Send("JOIN " + args[0]);
-
-		return CommandResult::SUCCESS;
-	});
-
-	commandManager.RegisterCommand("ping", {}, 0, "Sends a ping to the server.", [&sock](const CommandArgs& args)
-	{
-		if (sock == nullptr)
-		{
-			Logger::Print("You are not connected to a server.\n");
-			return CommandResult::ERR;
-		}
-		
-		sock->Send("PING");
 		return CommandResult::SUCCESS;
 	});
 

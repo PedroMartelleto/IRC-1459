@@ -113,6 +113,18 @@ void ServerInterpreter::RegisterMessages()
         return RPL_CODES.at("PIPE_VALID");
     };
 
+    IRCMessageValidator channelNameIsValidArg2 = [this](const IRCMessageArgs& args)
+    {
+        auto channel = args[1];
+        
+        if (!Server::IsValidChannelName(channel))
+        {
+            return ERR_CODES.at("ERR_NOSUCHCHANNEL");
+        }
+
+        return RPL_CODES.at("PIPE_VALID");
+    };
+
     const auto sourceAdminAndTargetExistsValidator = Pipe(sourceClientIsAdmin, targetUserExistsValidator);
     
     const auto sameChannelAdminValidator = Pipe(sourceAdminAndTargetExistsValidator, targetUserIsInTheSameChannel);
@@ -175,12 +187,13 @@ void ServerInterpreter::RegisterMessages()
 
             auto channel = Utils::StringTrim(args[0]);
             auto nickname = m_client->nickname;
+            bool isNewChannel = false;
 
             // If the channel doesn't exist, create it and set the client as operator.
             if (m_server->m_channels.find(channel) == m_server->m_channels.end())
             {
                 m_server->m_channels[channel] = CreateRef<Channel>(Channel{ channel, false, { }, { } });
-                m_client->isOperator = true;
+                isNewChannel = true;
             }
 
             // Checks if the client is already in the channel.
@@ -192,7 +205,7 @@ void ServerInterpreter::RegisterMessages()
             }
 
             // Checks if the client is authorized to enter the channel.
-            if (!m_server->m_channels[channel]->IsAuthorized(nickname))
+            if (!m_server->m_channels[channel]->IsAuthorizedToEnter(nickname))
             {
                 m_server->m_clientsMutex.unlock();
                 return ERR_CODES.at("ERR_INVITEONLYCHAN");
@@ -205,6 +218,8 @@ void ServerInterpreter::RegisterMessages()
                 oldChannel->RemoveUser(m_client->nickname);
             }
             
+            m_client->isOperator = isNewChannel;
+
             // Finally, adds the client to the new channel.
             m_server->m_channels[channel]->nicknames.push_back(m_client->nickname);
             m_server->m_clients[nickname]->channel = channel;
@@ -266,26 +281,41 @@ void ServerInterpreter::RegisterMessages()
         sameChannelAdminValidator
     );
 
-    m_interpreter.RegisterMessage("INVITE", { "nickname" },
+    m_interpreter.RegisterMessage("INVITE", { "nickname", "channel" },
         [this](const std::vector<std::string>& args)
         {
             auto nick = args[0];
             auto channel = args[1];
             
+            // Checks if the channel exists. If it doesn't, creates one.
+            if (m_server->m_channels.find(channel) == m_server->m_channels.end())
+            {
+                auto newChannel = CreateRef<Channel>(Channel{ channel, false, { }, { } });
+                newChannel->invites.insert(m_client->nickname);
+                newChannel->nicknames.push_back(m_client->nickname);
+                m_client->isOperator = true;
+                m_client->channel = channel;
+            }
+            // If the channel is not new, checks if the client is authorized to invite to it.
+            else if (!m_client->isOperator)
+            {
+                return ERR_CODES.at("ERR_CHANOPRIVSNEEDED");
+            }
+
+            // Ensures that the target client is not already in the channel
             if (m_server->m_clients[nick]->channel != channel)
             {
-                m_server->m_channels[channel]->nicknames.push_back(nick);
+                m_server->m_channels[channel]->invites.insert(nick);
+                m_server->SendToClient(nick, "You have been invited to " + channel + " by " + m_client->nickname + ".");
+                return RPL_CODES.at("RPL_INVITING");
             }
             else
             {
-                return ERR_CODES.at("ERR_ALREADYINCHANNEL");
+                // Otherwise, returns an error.
+                return ERR_CODES.at("ERR_USERONCHANNEL");
             }
-
-            m_server->m_clients[nick]->channel = channel;
-
-            return RPL_CODES.at("RPL_INVITED");
         },
-        Pipe(sourceAdminAndTargetExistsValidator, channelArg2Exists)
+        Pipe(targetUserExistsValidator, channelNameIsValidArg2)
     );
 
     m_interpreter.RegisterMessage("MODE", { "channel", "modes" },

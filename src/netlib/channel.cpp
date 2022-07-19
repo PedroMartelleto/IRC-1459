@@ -1,6 +1,6 @@
 #include "channel.h"
 
-bool Channel::IsAuthorized(const std::string& nickname)
+bool Channel::IsAuthorizedToEnter(const std::string& nickname)
 {
     if (isInviteOnly)
     {

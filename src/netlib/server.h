@@ -39,15 +39,6 @@
  * 
  */
 
-// TODO: Client
-//			- /join command
-
-// TODO: Server
-//			- Channels
-
-// TODO: Invites
-
-
 class Server
 {
 public:
