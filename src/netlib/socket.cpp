@@ -112,7 +112,8 @@ int Socket::Connect()
 
 void Socket::SendFragment(const char* fragment, int fragmentSize)
 {
-	for (int i = 0; i < 5; i++){
+	for (int i = 0; i < 5; i++)
+	{
 		int bytesSent = send(m_socketFile, fragment, fragmentSize, 0);
 
 		// If the send succeeded, return

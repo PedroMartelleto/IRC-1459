@@ -430,7 +430,7 @@ void ServerInterpreter::Interpret(const std::string& msg)
                 }
                 else
                 {
-                    m_client -> sock.Send("You are muted.");
+                    m_client->sock.Send("You are muted.");
                 }
             }
             else

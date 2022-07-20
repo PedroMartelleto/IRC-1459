@@ -97,7 +97,8 @@ int main()
 			return CommandResult::ERR;
 		}
 
-		if (!client.HasNickname()) {
+		if (!client.HasNickname())
+		{
 			sock->Send("NICKNAME " + args[0]);
 			client.RegisterReplyCallback([&client](int replyCode) {
 				if (replyCode < 400)
@@ -106,7 +107,8 @@ int main()
 				}
 			});
 		}
-		else {
+		else
+		{
 			sock->Send(args[0]);
 		}
 

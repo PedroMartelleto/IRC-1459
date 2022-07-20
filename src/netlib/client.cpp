@@ -12,24 +12,25 @@ void Client::InterpretMessage(const std::string& msg)
     const auto trimmedMsg = Utils::StringTrim(msg);
 
     // Checks for server respones with 3 digits.
-    if (trimmedMsg.size() == 3)
+    if (trimmedMsg.substr(0, 4) == "RPL ")
     {
         try
         {
             // Interprets the response and prints it.
-            int code = std::stoi(trimmedMsg);
+            std::string codeStr = Utils::StringTrim(trimmedMsg.substr(4, 3));
+            int code = std::stoi(codeStr);
 
             if (code < 1 || code > 1000)
             {
-                Logger::Print("Server responded with invalid reply code: %s\n", trimmedMsg.c_str());
+                Logger::Print("Server responded with invalid reply code: %s\n", codeStr.c_str());
                 return;
             }
             
             if (code >= 1 && code < 400)
             {
-                if (RPL_NAMES.find(trimmedMsg) != RPL_NAMES.end())
+                if (RPL_NAMES.find(codeStr) != RPL_NAMES.end())
                 {
-                    Logger::Print("[%d] %s\n", code, RPL_NAMES[trimmedMsg].c_str());
+                    Logger::Print("[%s] %s\n", codeStr.c_str(), RPL_NAMES[codeStr].c_str());
                 }
                 else
                 {
@@ -38,9 +39,9 @@ void Client::InterpretMessage(const std::string& msg)
             }
             else
             {
-                if (ERR_NAMES.find(trimmedMsg) != ERR_NAMES.end())
+                if (ERR_NAMES.find(codeStr) != ERR_NAMES.end())
                 {
-                    Logger::Print("[%d] %s\n", code, ERR_NAMES[trimmedMsg].c_str());
+                    Logger::Print("[%s] %s\n", codeStr.c_str(), ERR_NAMES[codeStr].c_str());
                 }
                 else
                 {

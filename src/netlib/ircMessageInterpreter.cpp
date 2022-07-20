@@ -66,10 +66,10 @@ void IRCMessageInterpreter::Interpret(const std::string& msg,
 
     if (validationResult == RPL_CODES.at("PIPE_VALID"))
     {
-        replyHandler(specs->callback(args));
+        replyHandler("RPL " + specs->callback(args));
     }
     else
     {
-        replyHandler(validationResult);
+        replyHandler("RPL " + validationResult);
     }
 }

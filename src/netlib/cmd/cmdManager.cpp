@@ -39,6 +39,7 @@ void CommandManager::Poll()
     }
     catch (...)
     {
+        Logger::Print("Exception in command manager. Continuing...\n");
         PollEventsLoop();
     }
 
