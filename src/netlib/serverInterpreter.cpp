@@ -137,7 +137,7 @@ void ServerInterpreter::RegisterMessages()
 
     // MARK: - Message handlers
 
-    m_interpreter.RegisterMessage("NICK", { "nickname" },
+    m_interpreter.RegisterMessage("NICKNAME", { "nickname" },
         [this](const std::vector<std::string>& args)
         {
             auto nickname = Utils::StringTrim(args[0]);
