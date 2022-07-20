@@ -158,7 +158,7 @@ void ServerInterpreter::RegisterMessages()
 
             if (m_hasTemporaryNickname)
             {
-                m_server->Broadcast(nickname + " has joined the chat.");
+                m_server->Broadcast(nickname + " has joined the server.");
             }
             else
             {
