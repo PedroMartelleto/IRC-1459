@@ -156,6 +156,17 @@ void ServerInterpreter::RegisterMessages()
             m_server->m_clients.erase(oldNickname);
             m_server->m_clientsMutex.unlock();
 
+            m_server->m_channelsMutex.lock();
+            for (auto& [channelName, channel] : m_server->m_channels)
+            {
+                auto it = std::find(channel -> nicknames.begin(), channel -> nicknames.end(), oldNickname);
+                if (it != channel -> nicknames.end())
+                {
+                    *it = nickname;
+                }
+            }
+            m_server->m_channelsMutex.unlock();
+
             if (m_hasTemporaryNickname)
             {
                 m_server->Broadcast(nickname + " has joined the server.");
