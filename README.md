@@ -44,10 +44,6 @@ Exits the program.
 
 Updates the user's nickname.
 
->  /join [channel]
-
-Joins a channel.
-
 > /ping
 
 Pings the current server.

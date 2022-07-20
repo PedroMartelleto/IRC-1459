@@ -52,7 +52,7 @@ int main()
 
 		// Registers simple socket commands that are easily converted to the IRC protocol and sent over the socket.
 		SocketCmds::RegisterSocketCommands(&commandManager, sock.get(), {
-			SocketCommandSpec { "nick", { "nickname" }, "Updates the user's nickname." },
+			SocketCommandSpec { "nickname", { "nickname" }, "Updates the user's nickname." },
 			SocketCommandSpec { "join", { "channel" }, "Joins a channel." },
 			SocketCommandSpec { "ping", {  }, "Pings the current server." },
 			
