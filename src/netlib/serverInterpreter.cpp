@@ -240,7 +240,7 @@ void ServerInterpreter::RegisterMessages()
             auto target = m_server->m_clients[nickname];
             
             std::string ip = target->sock.GetIP();
-            m_server->SendToClient(m_client->nickname, ip);
+            m_server->SendToClient(ip, m_client->nickname);
 
             return RPL_CODES.at("RPL_WHOISUSER");
             
@@ -254,7 +254,7 @@ void ServerInterpreter::RegisterMessages()
             auto nick = args[0];
             auto& target = m_server->m_clients[nick];
             target->isMuted = true;
-            m_server->SendToClient(nick, "You have been muted from channel " + target->channel + ".");
+            m_server->SendToClient("You have been muted from channel " + target->channel + ".", nick);
             return RPL_CODES.at("RPL_MUTED");
         },
         sameChannelAdminValidator
@@ -266,7 +266,7 @@ void ServerInterpreter::RegisterMessages()
             auto nick = args[0];
             auto& target = m_server->m_clients[nick];
             target->isMuted = false;
-            m_server->SendToClient(nick, "You have been unmuted from channel " + target->channel + ".");
+            m_server->SendToClient("You have been unmuted from channel " + target->channel + ".", nick);
             return RPL_CODES.at("RPL_UNMUTED");
         },
         sameChannelAdminValidator
@@ -288,7 +288,7 @@ void ServerInterpreter::RegisterMessages()
             // Sets the user's channel to an empty string
             m_server->m_clients[nick]->channel = "";
 
-            m_server->SendToClient(nick, "You have been kicked from the channel " + channelName + ".");
+            m_server->SendToClient("You have been kicked from the channel " + channelName + ".", nick);
 
             return RPL_CODES.at("RPL_KICKED");
         },
@@ -357,7 +357,7 @@ void ServerInterpreter::RegisterMessages()
                 }
 
                 m_server->m_clients[targetUser]->isOperator = true;
-                m_server->SendToClient(targetUser, "You have been given operator status by " + m_client->nickname + " in channel " + channel + ".");
+                m_server->SendToClient("You have been given operator status by " + m_client->nickname + " in channel " + channel + ".", targetUser);
 
                 return RPL_CODES.at("RPL_MODEUPDATED");
             }
@@ -372,7 +372,7 @@ void ServerInterpreter::RegisterMessages()
                 }
 
                 m_server->m_clients[targetUser]->isOperator = false;
-                m_server->SendToClient(targetUser, "You have been demoted from operator by " + m_client->nickname + " in channel " + channel + ".");
+                m_server->SendToClient("You have been demoted from operator by " + m_client->nickname + " in channel " + channel + ".", targetUser);
 
                 return RPL_CODES.at("RPL_MODEUPDATED");
             }
