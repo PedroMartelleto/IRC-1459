@@ -98,7 +98,7 @@ int main()
 		}
 
 		if (!client.HasNickname()) {
-			sock->Send("NICK " + args[0]);
+			sock->Send("NICKNAME " + args[0]);
 			client.RegisterReplyCallback([&client](int replyCode) {
 				if (replyCode < 400)
 				{
