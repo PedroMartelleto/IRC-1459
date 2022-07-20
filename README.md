@@ -40,7 +40,7 @@ Sends the requested message. Note that the message may contain spaces.
 
 Exits the program.
 
-> /nick [nickname]
+> /nickname [nickname]
 
 Updates the user's nickname.
 
