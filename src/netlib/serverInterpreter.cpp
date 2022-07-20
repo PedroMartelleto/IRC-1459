@@ -408,18 +408,25 @@ void ServerInterpreter::Interpret(const std::string& msg)
         // Default message handler
         [this](const std::string& msg)
         {
-            // Sends a reply to the client
+            // Sends the message to the client
             m_server->m_clientsMutex.lock();
 
-            if (m_client -> channel != ""){
-                if (!m_client -> isMuted){
+            if (m_client->channel.length() > 0)
+            {
+                if (!m_client->isMuted)
+                {
                     m_server->BroadcastChannel(m_client->nickname + ": " + msg, m_client->channel);
-                }else{
-                    m_client -> sock.Send("You are not authorized to send messages in this channel.");
                 }
-            }else{
-                m_client -> sock.Send("Please join a channel to send messages.");
+                else
+                {
+                    m_client -> sock.Send("You are muted.");
+                }
             }
+            else
+            {
+                m_client->sock.Send("Please join a channel to send messages.");
+            }
+
             m_server->m_clientsMutex.unlock();
         }
     );
