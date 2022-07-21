@@ -68,6 +68,12 @@ int main()
 			SocketCommandSpec { "whois", { "nickname" }, "Requests information about a user." }
 		});
 
+		if (listener != nullptr)
+		{
+			listener->detach();
+			listener = nullptr;
+		}
+
 		listener = CreateRef<std::thread>([&sock, &client, server, port]()
 		{
 			// Prints the lines received from the client

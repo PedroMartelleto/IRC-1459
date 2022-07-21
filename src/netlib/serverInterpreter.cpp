@@ -315,11 +315,12 @@ void ServerInterpreter::RegisterMessages()
             // Checks if the channel exists. If it doesn't, creates one.
             if (m_server->m_channels.find(channel) == m_server->m_channels.end())
             {
-                auto newChannel = CreateRef<Channel>(Channel{ channel, false, { }, { } });
+                auto newChannel = CreateRef<Channel>(Channel{ channel, true, { }, { } });
                 newChannel->invites.insert(m_client->nickname);
                 newChannel->nicknames.push_back(m_client->nickname);
                 m_client->isOperator = true;
                 m_client->channel = channel;
+                m_server->m_channels[channel] = newChannel;
             }
             // If the channel is not new, checks if the client is authorized to invite to it.
             else if (!m_client->isOperator)
